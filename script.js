@@ -5,7 +5,7 @@ let total = 0;
 // عرض/إخفاء السلة
 function toggleCart() {
     const cartSidebar = document.getElementById('cart-sidebar');
-    cartSidebar.classList.toggle('active');
+    let orderText = `🎯 طلب جديد من متجر التوب 🎯\n\n`;
 }
 
 // إضافة منتج للسلة
