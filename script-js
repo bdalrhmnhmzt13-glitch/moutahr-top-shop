@@ -1,0 +1,152 @@
+// متغيرات السلة
+let cart = [];
+let total = 0;
+
+// عرض/إخفاء السلة
+function toggleCart() {
+    const cartSidebar = document.getElementById('cart-sidebar');
+    cartSidebar.classList.toggle('active');
+}
+
+// إضافة منتج للسلة
+function addToCart(name, price) {
+    // البحث إذا المنتج موجود مسبقاً
+    const existingItem = cart.find(item => item.name === name);
+    
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({
+            name: name,
+            price: price,
+            quantity: 1
+        });
+    }
+    
+    updateCart();
+    showNotification('تم إضافة المنتج للسلة ✅');
+}
+
+// تحديث عرض السلة
+function updateCart() {
+    const cartItems = document.getElementById('cart-items');
+    const cartCount = document.getElementById('cart-count');
+    const cartTotal = document.getElementById('cart-total');
+    
+    // تحديث العدد
+    cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+    
+    // تحديث العناصر
+    cartItems.innerHTML = '';
+    total = 0;
+    
+    cart.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        
+        const cartItem = document.createElement('div');
+        cartItem.className = 'cart-item';
+        cartItem.innerHTML = `
+            <div>
+                <strong>${item.name}</strong>
+                <br>
+                <small>$${item.price} × ${item.quantity}</small>
+            </div>
+            <div>
+                <strong>$${itemTotal}</strong>
+                <button onclick="removeFromCart(${index})" style="background:red; color:white; border:none; padding:5px; margin-right:10px; border-radius:5px;">✕</button>
+            </div>
+        `;
+        
+        cartItems.appendChild(cartItem);
+    });
+    
+    // تحديث المجموع
+    cartTotal.textContent = `المجموع: $${total}`;
+}
+
+// إزالة منتج من السلة
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCart();
+}
+
+// إرسال الطلب للواتساب
+function sendToWhatsApp() {
+    if (cart.length === 0) {
+        showNotification('السلة فارغة! أضف منتجات أولاً ❌');
+        return;
+    }
+    
+    // تحضير نص الطلب
+    let orderText = `🎯 طلب جديد من متجر المتحر التوب 🎯\n\n`;
+    
+    cart.forEach(item => {
+        orderText += `🛍️ ${item.name}\n`;
+        orderText += `💰 السعر: $${item.price}\n`;
+        orderText += `📦 الكمية: ${item.quantity}\n`;
+        orderText += `🔢 المجموع: $${item.price * item.quantity}\n`;
+        orderText += `────────────────────\n`;
+    });
+    
+    orderText += `\n💰💰 المجموع الكلي: $${total}\n\n`;
+    orderText += `👤 الرجاء كتابة اسمك ورقم هاتفك:\n________________\n\n`;
+    orderText += `📍 عنوان التوصيل:\n________________`;
+    
+    // ترميز النص للرابط
+    const encodedText = encodeURIComponent(orderText);
+    
+    // رقم الواتساب - غير هذا الرقم لرقمك الحقيقي
+    const phoneNumber = '963123456789'; // بدل 123456789 برقمك
+    
+    // فتح الواتساب
+    window.open(`https://wa.me/${phoneNumber}?text=${encodedText}`, '_blank');
+    
+    // تفريغ السلة بعد الإرسال
+    cart = [];
+    updateCart();
+    toggleCart();
+    
+    showNotification('تم فتح الواتساب لإكمال الطلب 📱');
+}
+
+// إشعارات
+function showNotification(message) {
+    // إنشاء عنصر الإشعار
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--primary);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px var(--primary);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // إزالة الإشعار بعد 3 ثواني
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// إغلاق السلة عند الضغط خارجها
+document.addEventListener('click', function(event) {
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const cartIcon = document.querySelector('.cart-icon');
+    
+    if (!cartSidebar.contains(event.target) && !cartIcon.contains(event.target)) {
+        cartSidebar.classList.remove('active');
+    }
+});
+
+// التهيئة الأولية
+document.addEventListener('DOMContentLoaded', function() {
+    updateCart();
+});
