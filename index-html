@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المتحر التوب - Moutahr Top</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- الهيدر -->
+    <header class="header">
+        <div class="logo">
+            <h1>🛍️ المتحر التوب</h1>
+            <p>Moutahr Top Store</p>
+        </div>
+        <div class="cart-icon" onclick="toggleCart()">
+            🛒 <span id="cart-count">0</span>
+        </div>
+    </header>
+
+    <!-- المنتجات -->
+    <main class="products-grid">
+        <!-- منتج 1 -->
+        <div class="product-card">
+            <img src="images/product1.jpg" alt="منتج 1">
+            <h3>جاكيت شتوي متميز</h3>
+            <p class="price">$45</p>
+            <button class="add-to-cart" onclick="addToCart('جاكيت شتوي متميز', 45)">
+                أضف للسلة
+            </button>
+        </div>
+
+        <!-- منتج 2 -->
+        <div class="product-card">
+            <img src="images/product2.jpg" alt="منتج 2">
+            <h3>قميص رياضي</h3>
+            <p class="price">$30</p>
+            <button class="add-to-cart" onclick="addToCart('قميص رياضي', 30)">
+                أضف للسلة
+            </button>
+        </div>
+
+        <!-- أضف منتجات أخرى بنفس الطريقة -->
+    </main>
+
+    <!-- سلة التسوق -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>🛒 سلة التسوق</h3>
+            <button onclick="toggleCart()">✕</button>
+        </div>
+        <div id="cart-items" class="cart-items">
+            <!-- هنا تظهر المنتجات المضافة -->
+        </div>
+        <div class="cart-footer">
+            <div id="cart-total" class="cart-total">المجموع: $0</div>
+            <button class="whatsapp-btn" onclick="sendToWhatsApp()">
+                📱 أكمل الطلب عبر الواتساب
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
