@@ -111,7 +111,7 @@ function removeFromCart(index) {
 // ==================== 📱 دوال الواتساب ====================
 
 // إرسال الطلب للواتساب
-function sendToWhatsApp() {
+function sendToWhatsApp() {96364659342
     if (cart.length === 0) {
         showNotification('❌ السلة فارغة! أضف منتجات أولاً');
         return;
@@ -141,11 +141,11 @@ function sendToWhatsApp() {
     const encodedText = encodeURIComponent(orderText);
     
     // رقم الواتساب - غير هذا الرقم لرقمك الحقيقي
-    const phoneNumber = '963123456789'; // 🔄 غير هذا الرقم
+    const phoneNumber = '963964659342'; // 🔄 غير هذا الرقم
     
     // فتح الواتساب
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
-    console.log('📞 رابط الواتساب:', whatsappUrl);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${https://wa.me/message/AI3MMIEL5HIEN1}`;
+    console.log('📞 رابط الواتساب:', https://wa.me/message/AI3MMIEL5HIEN1);
     window.open(whatsappUrl, '_blank');
     
     // تفريغ السلة بعد الإرسال
