@@ -33,48 +33,48 @@
         🛒 <span id="cart-count">0</span>
     </div>
 </header>
-
-    <!-- المنتجات -->
-    <main class="products-grid">
-        <!-- منتج 1 -->
-        <div class="product-card">
-            <img src="images/product1.jpg" alt="منتج 1">
-            <h3>جاكيت شتوي متميز</h3>
-            <p class="price">$45</p>
-            <button class="add-to-cart" onclick="addToCart('جاكيت شتوي متميز', 45)">
-                أضف للسلة
-            </button>
-        </div>
-
-        <!-- منتج 2 -->
-        <div class="product-card">
-            <img src="images/product2.jpg" alt="منتج 2">
-            <h3>قميص رياضي</h3>
-            <p class="price">$30</p>
-            <button class="add-to-cart" onclick="addToCart('قميص رياضي', 30)">
-                أضف للسلة
-            </button>
-        </div>
-
-        <!-- أضف منتجات أخرى بنفس الطريقة -->
-    </main>
-
-    <!-- سلة التسوق -->
-    <div id="cart-sidebar" class="cart-sidebar">
-        <div class="cart-header">
-            <h3>🛒 سلة التسوق</h3>
-            <button onclick="toggleCart()">✕</button>
-        </div>
-        <div id="cart-items" class="cart-items">
-            <!-- هنا تظهر المنتجات المضافة -->
-        </div>
-        <div class="cart-footer">
-            <div id="cart-total" class="cart-total">المجموع: $0</div>
-            <button class="whatsapp-btn" onclick="sendToWhatsApp()">
-                📱 أكمل الطلب عبر الواتساب
-            </button>
-        </div>
+<!-- المنتجات -->
+<main class="products-grid">
+    <!-- المنتج 1 -->
+    <div class="product-card">
+        <img src="images/1000002134.jpg" alt="منتج 1" onerror="this.src='https://via.placeholder.com/300x200/8A2BE2/FFFFFF?text=منتج+1'">
+        <h3> عملات رقمية ورصيد </h3>
+        <p class="price">$45</p>
+        <button class="add-to-cart" onclick="addToCart('جاكيت شتوي متميز', 45)">
+            أضف للسلة
+        </button>
     </div>
+    <!-- المنتج 2 -->
+    <div class="product-card">
+        <img src="images/product2.jpg" alt="منتج 2" onerror="this.src='https://via.placeholder.com/300x200/00FFFF/000000?text=منتج+2'">
+        <h3> ألعاب </h3>
+        <p class="price">$30</p>
+        <button class="add-to-cart" onclick="addToCart('قميص رياضي حديث', 30)">
+            أضف للسلة
+        </button>
+    </div>
+
+    <!-- المنتج 3 -->
+    <div class="product-card">
+        <img src="images/product3.jpg" alt="منتج 3" onerror="this.src='https://via.placeholder.com/300x200/FF00FF/FFFFFF?text=منتج+3'">
+        <h3> دعم التواصل الاجتماعي </h3>
+        <p class="price">$55</p>
+        <button class="add-to-cart" onclick="addToCart('حذاء رياضي مريح', 55)">
+            أضف للسلة
+        </button>
+    </div>
+
+    <!-- المنتج 4 -->
+    <div class="product-card">
+        <img src="images/product4.jpg" alt="منتج 4" onerror="this.src='https://via.placeholder.com/300x200/FFFF00/000000?text=منتج+4'">
+        <h3>  تطبيقات لايف </h3>
+        <p class="price">$25</p>
+        <button class="add-to-cart" onclick="addToCart('نظارة شمسية عصرية', 25)">
+            أضف للسلة
+        </button>
+    </div>
+</main>
+    
 
     <script src="script.js"></script>
 </body>
