@@ -1,349 +1,93 @@
-:root {
-    --primary: #8A2BE2;
-    --secondary: #00FFFF;
-    --dark: #0f0f0f;
-    --light: #ffffff;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--dark);
-    color: var(--light);
-    direction: rtl;
-}
-
-/* الهيدر */
-.header {
-    background: rgba(138, 43, 226, 0.1);
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--primary);
-    box-shadow: 0 0 20px var(--primary);
-}
-
-.logo h1 {
-    color: var(--primary);
-    text-shadow: 0 0 10px var(--primary);
-}
-
-.cart-icon {
-    background: var(--primary);
-    padding: 10px 15px;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 0 0 15px var(--primary);
-    transition: all 0.3s ease;
-}
-
-.cart-icon:hover {
-    box-shadow: 0 0 25px var(--secondary);
-}
-
-/* شبكة المنتجات */
-.products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 2rem;
-}
-
-/* بطاقة المنتج */
-.product-card {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    border: 1px solid transparent;
-    transition: all 0.3s ease;
-}
-
-.product-card:hover {
-    border-color: var(--primary);
-    box-shadow: 0 0 20px var(--primary);
-    transform: translateY(-5px);
-}
-
-.product-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-
-.price {
-    color: var(--secondary);
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin: 10px 0;
-}
-
-.add-to-cart {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px var(--primary);
-}
-
-.add-to-cart:hover {
-    box-shadow: 0 0 20px var(--secondary);
-    transform: scale(1.05);
-}
-
-/* سلة التسوق */
-.cart-sidebar {
-    position: fixed;
+/* شريط الأقسام */
+.categories-nav {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+    position: sticky;
     top: 0;
-    left: -400px;
-    width: 350px;
-    height: 100vh;
-    background: var(--dark);
-    border-left: 2px solid var(--primary);
-    box-shadow: -5px 0 20px rgba(138, 43, 226, 0.3);
-    transition: left 0.3s ease;
-    z-index: 1000;
+    z-index: 99;
+    backdrop-filter: blur(10px);
 }
 
-.cart-sidebar.active {
-    left: 0;
-}
-
-.cart-header {
+.categories-nav .container {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    border-bottom: 1px solid var(--primary);
-}
-
-.cart-items {
-    padding: 1rem;
-    height: 70vh;
-    overflow-y: auto;
-}
-
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 10px;
-}
-
-.cart-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 1rem;
-    border-top: 1px solid var(--primary);
-}
-
-.cart-total {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: var(--secondary);
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.whatsapp-btn {
-    background: #25D366;
-    color: white;
-    border: none;
-    padding: 15px;
-    width: 100%;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px #25D366;
-}
-
-.whatsapp-btn:hover {
-    box-shadow: 0 0 20px #25D366;
-    transform: scale(1.02);
-}
-
-/* التجاوب مع الشاشات الصغيرة */
-@media (max-width: 768px) {
-    .products-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        padding: 1rem;
-    }
-    
-    .cart-sidebar {
-        width: 300px;
-    }
-}
-/* تنسيقات جديدة للهيدر */
-.logo h1 {
-    position: relative;
-    background: linear-gradient(45deg, #8A2BE2, #00FFFF, #FF00FF, #8A2BE2);
-    background-size: 300% 300%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: glowingText 3s ease-in-out infinite;
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: 15px;
-    margin: 0;
-}
-
-/* تأثير التوهج المتحرك */
-@keyframes glowingText {
-    0%, 100% {
-        background-position: 0% 50%;
-        text-shadow: 0 0 20px #8A2BE2;
-    }
-    50% {
-        background-position: 100% 50%;
-        text-shadow: 0 0 30px #00FFFF;
-    }
-}
-
-/* الأيقونات المتحركة */
-.animated-icons {
-    display: inline-block;
-    margin: 0 10px;
-    animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-5px);
-    }
-}
-
-/* تأثير الشحن الخاص */
-.shipping-effect {
-    position: relative;
-    padding: 15px 25px;
-    border-radius: 20px;
-    background: rgba(138, 43, 226, 0.1);
-    border: 1px solid rgba(138, 43, 226, 0.3);
-    box-shadow: 0 0 25px rgba(138, 43, 226, 0.2);
-}
-
-.shipping-effect::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, #8A2BE2, #00FFFF, #FF00FF, #8A2BE2);
-    border-radius: 22px;
-    z-index: -1;
-    animation: rotate 4s linear infinite;
-}
-
-@keyframes rotate {
-    0% {
-        filter: hue-rotate(0deg);
-    }
-    100% {
-        filter: hue-rotate(360deg);
-    }
-}
-/* تحسينات عامة للتصميم */
-.products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-.product-card {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 15px;
-    padding: 15px;
-    text-align: center;
+.cat-btn {
+    background: rgba(138, 43, 226, 0.1);
+    color: #fff;
     border: 1px solid rgba(138, 43, 226, 0.3);
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
     transition: all 0.3s ease;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    font-size: 0.85rem;
+    white-space: nowrap;
 }
 
-.product-card:hover {
-    border-color: var(--primary);
-    box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
-    transform: translateY(-5px);
+.cat-btn:hover,
+.cat-btn.active {
+    background: linear-gradient(45deg, #8A2BE2, #00FFFF);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
 }
 
-.product-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 12px;
+/* الأقسام الرئيسية */
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
 }
 
-.product-card h3 {
-    font-size: 1.1rem;
-    margin: 10px 0;
-    color: #ffffff;
-    line-height: 1.4;
+.category-section {
+    margin-bottom: 3rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    border: 1px solid rgba(138, 43, 226, 0.2);
 }
 
-.product-card .price {
+.section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(138, 43, 226, 0.3);
+}
+
+.section-header h2 {
     color: #00FFFF;
-    font-size: 1.3rem;
-    font-weight: bold;
-    margin: 10px 0;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
     text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
-.product-card .add-to-cart {
-    background: linear-gradient(45deg, #8A2BE2, #00FFFF);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1rem;
-    font-weight: bold;
-    margin-top: auto;
-    width: 100%;
+.section-header p {
+    color: #888;
+    font-size: 0.9rem;
 }
 
-.product-card .add-to-cart:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+/* تحسينات الشبكة */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
 }
 
-/* تحسين الهيدر */
+/* تحسينات عامة */
 .header {
-    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-    padding: 1rem;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
+    padding: 0.8rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid transparent;
+    border-bottom: 2px solid;
     border-image: linear-gradient(45deg, #8A2BE2, #00FFFF) 1;
-    position: sticky;
-    top: 0;
-    z-index: 100;
 }
 
 .logo {
@@ -351,45 +95,40 @@ body {
     flex: 1;
 }
 
-.logo h1 {
-    font-size: 1.5rem;
-    margin: 0;
+.main-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, #8A2BE2, #00FFFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 5px;
 }
 
-/* تحسين المساحات للشاشات الصغيرة */
+.sub-title {
+    font-size: 0.75rem;
+    color: #00FFFF;
+    opacity: 0.9;
+}
+
+/* التجاوب */
 @media (max-width: 768px) {
-    .products-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 15px;
-        padding: 0.5rem;
+    .categories-nav .container {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 5px;
     }
     
-    .product-card {
-        padding: 12px;
+    .cat-btn {
+        font-size: 0.8rem;
+        padding: 6px 12px;
     }
     
-    .product-card img {
-        height: 180px;
-    }
-    
-    .header {
-        padding: 0.8rem;
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .logo h1 {
+    .section-header h2 {
         font-size: 1.3rem;
     }
-}
-
-@media (max-width: 480px) {
-    .products-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
     
-    .product-card img {
-        height: 160px;
+    .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
     }
 }
