@@ -3,55 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><div class="logo">
-    <h1>🚀# متجر Top للشحن التطبيقات
-## Top Apps Shipping Store</h1>
-    <p>Top Apps Shipping Store</p>
-</div> </title>
+    <title>متجر Top للشحن التطبيقات - Top Apps Shipping</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- الهيدر -->
-  <header class="header">
-    <div class="logo">
-        <div class="shipping-effect">
-            <h1>
-                <span class="animated-icons">🚀</span>
-                متجر Top للشحن التطبيقات
-                <span class="animated-icons">📦</span>
-                <br>
-                <small style="font-size: 0.6em; opacity: 0.8;">
-                    <span class="animated-icons">⚡</span>
-                    شحن سريع - جودة عالية
-                    <span class="animated-icons">💎</span>
-                </small>
-            </h1>
-        </div>
-        <p>Top Apps Shipping Store | Fast Delivery 🚀</p>
-    </div>
-    <div class="cart-icon" onclick="toggleCart()">
-        🛒 <span id="cart-count">0</span>
-    </div>
-</header>
-
-    <div class="product-card">
     <header class="header">
-    <div class="logo">
-        <div class="shipping-effect">
-            <h1 style="font-size: 1.4rem; margin: 0;">
-                <span class="animated-icons">🚀</span>
-                متجر Top للشحن التطبيقات
-                <span class="animated-icons">📦</span>
-            </h1>
+        <div class="logo">
+            <div class="main-title">
+                🚀 متجر Top للشحن التطبيقات 📦
+            </div>
+            <div class="sub-title">
+                ⚡ شحن سريع | 📱 تطبيقات | 🔒 آمن
+            </div>
         </div>
-        <p style="font-size: 0.9rem; margin: 5px 0 0 0; color: #00FFFF;">
-            ⚡ شحن سريع | 📱 تطبيقات | 🔒 آمن
-        </p>
+        <div class="cart-icon" onclick="toggleCart()">
+            🛒 <span id="cart-count">0</span>
+        </div>
+    </header>
+
+    <!-- شريط الأقسام -->
+    <nav class="categories-nav">
+        <div class="container">
+            <button class="cat-btn active" data-category="all">🏠 جميع الأقسام</button>
+            <button class="cat-btn" data-category="accounts">👤 الحسابات الجاهزة</button>
+            <button class="cat-btn" data-category="software">💻 برامج الكمبيوتر</button>
+            <button class="cat-btn" data-category="social">📱 السوشيال ميديا</button>
+            <button class="cat-btn" data-category="verification">✅ توثيق الحسابات</button>
+            <button class="cat-btn" data-category="balance">💰 الرصيد والعمليات</button>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content">
+        <!-- قسم الحسابات الجاهزة -->
+        <section class="category-section" id="accounts">
+            <div class="section-header">
+                <h2>👤 قسم الحسابات الجاهزة</h2>
+                <p>حسابات جاهزة بجودة عالية</p>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <img src="images/account1.jpg" alt="حساب فيسبوك" onerror="this.src='https://via.placeholder.com/300x200/8A2BE2/FFFFFF?text=حساب+فيسبوك'">
+                    <h3>حساب فيسبوك مميز</h3>
+                    <p class="price">$10</p>
+                    <button class="add-to-cart" onclick="addToCart('حساب فيسبوك مميز', 10)">
+                        أضف للسلة
+                    </button>
+                </div>
+                <div class="product-card">
+                    <img src="images/account2.jpg" alt="حساب انستغرام" onerror="this.src='https://via.placeholder.com/300x200/00FFFF/000000?text=حساب+انستغرام'">
+                    <h3>حساب انستغرام بريميوم</h3>
+                    <p class="price">$15</p>
+                    <button class="add-to-cart" onclick="addToCart('حساب انستغرام بريميوم', 15)">
+                        أضف للسلة
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم برامج الكمبيوتر -->
+        <section class="category-section" id="software">
+            <div class="section-header">
+                <h2>💻 قسم برامج الكمبيوتر</h2>
+                <p>أقوى البرامج والتطبيقات</p>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <img src="images/software1.jpg" alt="برنامج مونتاج" onerror="this.src='https://via.placeholder.com/300x200/FF00FF/FFFFFF?text=برنامج+مونتاج'">
+                    <h3>برنامج مونتاج احترافي</h3>
+                    <p class="price">$25</p>
+                    <button class="add-to-cart" onclick="addToCart('برنامج مونتاج احترافي', 25)">
+                        أضف للسلة
+                    </button>
+                </div>
+                <div class="product-card">
+                    <img src="images/software2.jpg" alt="برنامج تصميم" onerror="this.src='https://via.placeholder.com/300x200/FFFF00/000000?text=برنامج+تصميم'">
+                    <h3>برنامج تصميم جرافيك</h3>
+                    <p class="price">$30</p>
+                    <button class="add-to-cart" onclick="addToCart('برنامج تصميم جرافيك', 30)">
+                        أضف للسلة
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم السوشيال ميديا -->
+        <section class="category-section" id="social">
+            <div class="section-header">
+                <h2>📱 قسم السوشيال ميديا</h2>
+                <p>خدمات وسائل التواصل الاجتماعي</p>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <img src="images/social1.jpg" alt="متابعين" onerror="this.src='https://via.placeholder.com/300x200/00FF00/000000?text=متابعين+انستغرام'">
+                    <h3>1000 متابع انستغرام</h3>
+                    <p class="price">$8</p>
+                    <button class="add-to-cart" onclick="addToCart('1000 متابع انستغرام', 8)">
+                        أضف للسلة
+                    </button>
+                </div>
+                <div class="product-card">
+                    <img src="images/social2.jpg" alt="لايكات" onerror="this.src='https://via.placeholder.com/300x200/FF4500/FFFFFF?text=لايكات+فيسبوك'">
+                    <h3>5000 لايك فيسبوك</h3>
+                    <p class="price">$12</p>
+                    <button class="add-to-cart" onclick="addToCart('5000 لايك فيسبوك', 12)">
+                        أضف للسلة
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم توثيق الحسابات -->
+        <section class="category-section" id="verification">
+            <div class="section-header">
+                <h2>✅ قسم توثيق الحسابات</h2>
+                <p>خدمات توثيق الحسابات الرسمية</p>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <img src="images/verify1.jpg" alt="توثيق فيسبوك" onerror="this.src='https://via.placeholder.com/300x200/1E90FF/FFFFFF?text=توثيق+فيسبوك'">
+                    <h3>توثيق حساب فيسبوك</h3>
+                    <p class="price">$50</p>
+                    <button class="add-to-cart" onclick="addToCart('توثيق حساب فيسبوك', 50)">
+                        أضف للسلة
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الرصيد والعمليات -->
+        <section class="category-section" id="balance">
+            <div class="section-header">
+                <h2>💰 قسم الرصيد والعمليات</h2>
+                <p>خدمات الشحن والرصيد</p>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <img src="images/balance1.jpg" alt="رصيد بايبال" onerror="this.src='https://via.placeholder.com/300x200/32CD32/000000?text=رصيد+بايبال'">
+                    <h3>شحن رصيد بايبال</h3>
+                    <p class="price">$100</p>
+                    <button class="add-to-cart" onclick="addToCart('شحن رصيد بايبال 100$', 100)">
+                        أضف للسلة
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- سلة التسوق -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>🛒 سلة التسوق</h3>
+            <button onclick="toggleCart()">✕</button>
+        </div>
+        <div id="cart-items" class="cart-items"></div>
+        <div class="cart-footer">
+            <div id="cart-total" class="cart-total">المجموع: $0</div>
+            <button class="whatsapp-btn" onclick="sendToWhatsApp()">
+                📱 أكمل الطلب عبر الواتساب
+            </button>
+        </div>
     </div>
-    <div class="cart-icon" onclick="toggleCart()">
-        🛒 <span id="cart-count">0</span>
-    </div>
-</header>
 
     <script src="script.js"></script>
 </body>
