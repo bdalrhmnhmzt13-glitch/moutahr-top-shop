@@ -509,3 +509,661 @@
     <script src="script.js"></script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر الألعاب الإلكتروني</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .categories {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .category-btn {
+            background: #34495e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category-btn.active {
+            background: #e74c3c;
+        }
+        
+        .category-btn:hover {
+            background: #2c3e50;
+        }
+        
+        .cart-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #2c3e50;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            left: -400px;
+            width: 350px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: left 0.3s ease;
+            z-index: 999;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .cart-sidebar.active {
+            left: 0;
+        }
+        
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #e74c3c;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 998;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+
+        /* أنماط المنتجات */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .product {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 180px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .product-price {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+        
+        .product-description {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .add-to-cart {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .add-to-cart:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #2471a3 100%);
+            transform: translateY(-2px);
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .cart-total {
+            font-weight: bold;
+            font-size: 20px;
+            text-align: center;
+            margin: 25px 0;
+            color: #2c3e50;
+        }
+
+        .checkout-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #219a52 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background: linear-gradient(135deg, #219a52 0%, #1e8449 100%);
+            transform: translateY(-2px);
+        }
+
+        .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: #c0392b;
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 40px 0 30px;
+            color: #2c3e50;
+            font-size: 28px;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .products {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            
+            .categories {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- زر سلة التسوق -->
+    <button class="cart-button" onclick="openCart()">
+        🛒
+        <span class="cart-count" id="cartCount">0</span>
+    </button>
+
+    <!-- الرأس -->
+    <div class="header">
+        <h1>🎮 متجر الألعاب الإلكتروني</h1>
+        <p>أفضل الألعاب والعملات بأفضل الأسعار - استمتع بتجربة التسوق</p>
+    </div>
+
+    <!-- الأقسام -->
+    <div class="categories">
+        <button class="category-btn active" onclick="filterCategory('all')">جميع المنتجات</button>
+        <button class="category-btn" onclick="filterCategory('action')">ألعاب الحركة</button>
+        <button class="category-btn" onclick="filterCategory('sports')">ألعاب الرياضة</button>
+        <button class="category-btn" onclick="filterCategory('adventure')">ألعاب المغامرة</button>
+        <button class="category-btn" onclick="filterCategory('racing')">ألعاب السباقات</button>
+        <button class="category-btn" onclick="filterCategory('coins')">العملات والبطاقات</button>
+    </div>
+
+    <!-- قسم العملات والبطاقات -->
+    <h2 class="section-title">💎 العملات والبطاقات</h2>
+    
+    <!-- المنتجات -->
+    <div class="products" id="productsContainer">
+        <!-- المنتجات ستضاف هنا عن طريق JavaScript -->
+    </div>
+
+    <!-- سلة التسوق الجانبية -->
+    <div class="overlay" id="overlay" onclick="closeCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>🛒 سلة التسوق</h2>
+            <button class="close-cart" onclick="closeCart()">×</button>
+        </div>
+        
+        <div class="cart-items" id="cartItems">
+            <p style="text-align: center; color: #7f8c8d;" id="emptyCartMessage">السلة فارغة</p>
+        </div>
+        
+        <div class="cart-total" id="cartTotal">
+            الإجمالي: 0 ل.س
+        </div>
+        
+        <button class="checkout-btn" onclick="checkout()">🚀 إتمام الشراء</button>
+    </div>
+
+    <script>
+        // بيانات منتجات المتجر - يمكنك تعديلها كما تريد
+        const products = [
+            // العملات والبطاقات (المنتجات الجديدة)
+            {
+                id: 101,
+                name: "ببجي - 60 شدة",
+                price: 10000,
+                category: "coins",
+                color: "#ff6b6b",
+                badge: "شائع",
+                description: "60 شدة للعبة ببجي - شحن فوري"
+            },
+            {
+                id: 102,
+                name: "فري فاير - 110 جوهرة", 
+                price: 12000,
+                category: "coins",
+                color: "#4ecdc4",
+                badge: "جديد",
+                description: "110 جوهرة للعبة فري فاير - توصيل سريع"
+            },
+
+            // ألعاب الحركة
+            {
+                id: 1,
+                name: "لعبة Call of Duty",
+                price: 199000,
+                category: "action",
+                color: "#e74c3c",
+                badge: "الأكثر مبيعاً",
+                description: "لعبة حركة وإثارة مميزة مع رسومات واقعية"
+            },
+            {
+                id: 2,
+                name: "لعبة Battlefield",
+                price: 179000,
+                category: "action", 
+                color: "#c0392b",
+                badge: "جديد",
+                description: "معارك جماعية مثيرة في بيئات متنوعة"
+            },
+            {
+                id: 3,
+                name: "لعبة Fortnite",
+                price: 149000,
+                category: "action",
+                color: "#d35400", 
+                badge: "شهيرة",
+                description: "لعبة البقاء الأشهر مع وضع الباتل رويال"
+            },
+
+            // ألعاب الرياضة
+            {
+                id: 4,
+                name: "FIFA 2024",
+                price: 229000,
+                category: "sports",
+                color: "#27ae60",
+                badge: "مميز",
+                description: "محاكاة كرة القدم الأكثر واقعية مع كل الأندية"
+            },
+            {
+                id: 5,
+                name: "NBA 2K24", 
+                price: 209000,
+                category: "sports",
+                color: "#2ecc71",
+                badge: "حصري",
+                description: "أفضل لعبة كرة سلة بميزات متطورة"
+            },
+            {
+                id: 6,
+                name: "UFC 5",
+                price: 189000,
+                category: "sports",
+                color: "#1abc9c",
+                badge: "قوي",
+                description: "تجربة قتال شاملة مع أفضل المقاتلين"
+            },
+
+            // ألعاب المغامرة
+            {
+                id: 7,
+                name: "The Legend of Zelda",
+                price: 249000,
+                category: "adventure",
+                color: "#3498db",
+                badge: "كلاسيكي",
+                description: "رحلة ملحمية في عالم خيالي ساحر"
+            },
+            {
+                id: 8,
+                name: "Assassin's Creed",
+                price: 219000,
+                category: "adventure",
+                color: "#2980b9", 
+                badge: "مغامرة",
+                description: "استكشف التاريخ في مغامرات مثيرة"
+            },
+            {
+                id: 9,
+                name: "Uncharted 4",
+                price: 199000,
+                category: "adventure",
+                color: "#8e44ad",
+                badge: "مثير",
+                description: "مطارات وكنوز في عالم من الإثارة"
+            },
+
+            // ألعاب السباقات
+            {
+                id: 10,
+                name: "Need for Speed",
+                price: 179000,
+                category: "racing",
+                color: "#f39c12",
+                badge: "سريع",
+                description: "سباقات سيارات عالية السرعة في شوارع المدينة"
+            },
+            {
+                id: 11,
+                name: "Gran Turismo 7",
+                price: 239000,
+                category: "racing",
+                color: "#e67e22",
+                badge: "واقعي", 
+                description: "محاكاة واقعية لسباقات السيارات الاحترافية"
+            },
+            {
+                id: 12,
+                name: "Forza Horizon 5",
+                price: 229000,
+                category: "racing",
+                color: "#d35400",
+                badge: "مفتوح",
+                description: "عالم مفتوح لاستكشاف وسباقات حرة"
+            }
+        ];
+
+        // متغيرات السلة
+        let cart = [];
+        let total = 0;
+        let currentCategory = 'all';
+
+        // عرض المنتجات
+        function displayProducts() {
+            const productsContainer = document.getElementById('productsContainer');
+            productsContainer.innerHTML = '';
+
+            const filteredProducts = currentCategory === 'all' 
+                ? products 
+                : products.filter(product => product.category === currentCategory);
+
+            filteredProducts.forEach(product => {
+                const productElement = document.createElement('div');
+                productElement.className = 'product';
+                productElement.innerHTML = `
+                    ${product.badge ? `<div class="product-badge">${product.badge}</div>` : ''}
+                    <div class="product-image" style="background: ${product.color};">
+                        ${product.category === 'coins' ? '💎' : '🎮'} ${product.name}
+                    </div>
+                    <h3>${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-price">${product.price.toLocaleString()} ل.س</div>
+                    <button class="add-to-cart" onclick="addToCart(${product.id})">🛒 أضف إلى السلة</button>
+                `;
+                productsContainer.appendChild(productElement);
+            });
+        }
+
+        // تصفية حسب القسم
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            // تحديد الأزرار النشطة
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            displayProducts();
+        }
+
+        // فتح سلة التسوق
+        function openCart() {
+            document.getElementById('cartSidebar').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        // إغلاق سلة التسوق
+        function closeCart() {
+            document.getElementById('cartSidebar').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        // إضافة منتج إلى السلة
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            
+            if (!product) return;
+
+            // البحث إذا كان المنتج موجود مسبقاً
+            const existingProduct = cart.find(item => item.id === productId);
+            
+            if (existingProduct) {
+                existingProduct.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    quantity: 1
+                });
+            }
+            
+            // تحديث السلة
+            updateCart();
+            
+            // تأثير مرئي
+            const cartBtn = document.querySelector('.cart-button');
+            cartBtn.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                cartBtn.style.transform = 'scale(1)';
+            }, 300);
+            
+            // رسالة تأكيد
+            alert(`🎉 تم إضافة ${product.name} إلى السلة`);
+        }
+
+        // تحديث عرض السلة
+        function updateCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartCount = document.getElementById('cartCount');
+            const cartTotal = document.getElementById('cartTotal');
+            const emptyCartMessage = document.getElementById('emptyCartMessage');
+            
+            // إعادة حساب الإجمالي
+            total = 0;
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+            });
+            
+            // تحديث العداد
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            // تحديث الإجمالي
+            cartTotal.textContent = `الإجمالي: ${total.toLocaleString()} ل.س`;
+            
+            // تحديث قائمة العناصر
+            if (cart.length === 0) {
+                emptyCartMessage.style.display = 'block';
+                cartItems.innerHTML = '<p style="text-align: center; color: #7f8c8d;" id="emptyCartMessage">السلة فارغة</p>';
+            } else {
+                emptyCartMessage.style.display = 'none';
+                
+                let itemsHTML = '';
+                cart.forEach((item, index) => {
+                    itemsHTML += `
+                        <div class="cart-item">
+                            <div>
+                                <strong>${item.name}</strong>
+                                <br>
+                                <small>${item.price.toLocaleString()} ل.س × ${item.quantity}</small>
+                            </div>
+                            <div>
+                                <strong>${(item.price * item.quantity).toLocaleString()} ل.س</strong>
+                                <br>
+                                <button class="remove-btn" onclick="removeFromCart(${index})">🗑️ إزالة</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                cartItems.innerHTML = itemsHTML;
+            }
+        }
+
+        // إزالة منتج من السلة
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        // إتمام الشراء
+        function checkout() {
+            if (cart.length === 0) {
+                alert('🛒 السلة فارغة! أضف بعض المنتجات أولاً.');
+                return;
+            }
+            
+            alert(`🎊 شكراً لشرائك! \nالمجموع: ${total.toLocaleString()} ل.س\nسيتم توصيل طلبك قريباً.`);
+            
+            // تفريغ السلة بعد الشراء
+            cart = [];
+            updateCart();
+            closeCart();
+        }
+
+        // التهيئة الأولية
+        document.addEventListener('DOMContentLoaded', function() {
+            displayProducts();
+            updateCart();
+            console.log('🎮 متجر الألعاب الإلكتروني جاهز!');
+        });
+    </script>
+</body>
+</html>
