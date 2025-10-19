@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>من نحن - Top للشحن</title>
+  <style>
+    body {
+      background: #f5f5f5;
+      font-family: 'Arial', sans-serif;
+      padding: 30px;
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    p {
+      font-size: 17px;
+      color: #444;
+    }
+
+    a {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      text-decoration: none;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>من نحن</h1>
+    <p>
+      نحن فريق <strong>Top للشحن</strong>، متجر رقمي متخصص في بيع العملات والبطاقات الإلكترونية بأفضل الأسعار وأسرع خدمة.
+      هدفنا هو توفير تجربة شراء سهلة وآمنة لكل المستخدمين، مع دعم فوري وموثوق.
+      نؤمن أن البساطة والسرعة هما مفتاح رضا العملاء، ونعمل دائمًا على تحسين خدماتنا لتلبية احتياجاتكم.
+    </p>
+
+    <a href="index.html">العودة إلى الصفحة الرئيسية</a>
+  </div>
+</body>
+</html>
