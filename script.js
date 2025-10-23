@@ -2,272 +2,6 @@
 let cart = [];
 let total = 0;
 
-// ==================== 🛒 دوال السلة ====================
-
-// عرض/إخفاء السلة
-function toggleCart() {
-    const cartSidebar = document.getElementById('cart-sidebar');
-    console.log('🛒 toggleCart called - Element:', cartSidebar);
-    
-    if (cartSidebar) {
-        cartSidebar.classList.toggle('active');
-        console.log('✅ السلة:', cartSidebar.classList.contains('active') ? 'مفتوحة' : 'مغلقة');
-    } else {
-        console.error('❌ لم يتم العثور على عنصر سلة التسوق');
-    }
-}
-
-// إضافة منتج للسلة
-function addToCart(name, price) {
-    console.log('🛍️ إضافة منتج:', name, price);
-    
-    // البحث إذا المنتج موجود مسبقاً
-    const existingItem = cart.find(item => item.name === name);
-    
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({
-            name: name,
-            price: price,
-            quantity: 1
-        });
-    }
-    
-    updateCart();
-    showNotification('✅ تم إضافة المنتج للسلة');
-    
-    // فتح السلة تلقائياً بعد الإضافة
-    setTimeout(() => {
-        const cartSidebar = document.getElementById('cart-sidebar');
-        if (cartSidebar && !cartSidebar.classList.contains('active')) {
-            cartSidebar.classList.add('active');
-        }
-    }, 300);
-}
-
-// تحديث عرض السلة
-function updateCart() {
-    const cartItems = document.getElementById('cart-items');
-    const cartCount = document.getElementById('cart-count');
-    const cartTotal = document.getElementById('cart-total');
-    
-    console.log('🔄 تحديث السلة - العناصر:', cartItems, cartCount, cartTotal);
-    
-    if (!cartItems || !cartCount || !cartTotal) {
-        console.error('❌ عناصر السلة غير موجودة في HTML');
-        return;
-    }
-    
-    // تحديث العدد
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartCount.textContent = totalItems;
-    
-    // تحديث العناصر
-    cartItems.innerHTML = '';
-    total = 0;
-    
-    if (cart.length === 0) {
-        cartItems.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">السلة فارغة</p>';
-    } else {
-        cart.forEach((item, index) => {
-            const itemTotal = item.price * item.quantity;
-            total += itemTotal;
-            
-            const cartItem = document.createElement('div');
-            cartItem.className = 'cart-item';
-            cartItem.innerHTML = `
-                <div class="cart-item-info">
-                    <strong>${item.name}</strong>
-                    <br>
-                    <small>$${item.price} × ${item.quantity}</small>
-                </div>
-                <div class="cart-item-actions">
-                    <strong>$${itemTotal}</strong>
-                    <button class="remove-btn" onclick="removeFromCart(${index})" title="إزالة المنتج">
-                        ✕
-                    </button>
-                </div>
-            `;
-            
-            cartItems.appendChild(cartItem);
-        });
-    }
-    
-    // تحديث المجموع
-    cartTotal.textContent = `المجموع: $${total}`;
-}
-
-// إزالة منتج من السلة
-function removeFromCart(index) {
-    if (index >= 0 && index < cart.length) {
-        const removedItem = cart[index];
-        cart.splice(index, 1);
-        updateCart();
-        showNotification(`🗑️ تم إزالة ${removedItem.name} من السلة`);
-    }
-}
-
-// تفريغ السلة بالكامل
-function clearCart() {
-    cart = [];
-    updateCart();
-    showNotification('🗑️ تم تفريغ السلة بالكامل');
-}
-
-// ==================== 📱 دوال الواتساب ====================
-
-// إرسال الطلب للواتساب مع معلومات الدفع
-function sendToWhatsApp() {
-    if (cart.length === 0) {
-        showNotification('❌ السلة فارغة! أضف منتجات أولاً');
-        return;
-    }
-    
-    // تحضير نص الطلب مع معلومات الدفع
-    let orderText = `🎯 *طلب جديد من متجر Top للشحن التطبيقات* 🎯\n\n`;
-    orderText += `📦 *تفاصيل الطلب:*\n`;
-    orderText += `────────────────────\n`;
-    
-    cart.forEach(item => {
-        orderText += `🛍️ *${item.name}*\n`;
-        orderText += `💰 السعر: $${item.price}\n`;
-        orderText += `📦 الكمية: ${item.quantity}\n`;
-        orderText += `🔢 المجموع: $${item.price * item.quantity}\n`;
-        orderText += `────────────────────\n`;
-    });
-    
-    orderText += `\n💰 *المجموع الكلي: $${total}*\n\n`;
-    
-    // إضافة معلومات الدفع
-    orderText += `💳 *معلومات الدفع:*\n`;
-    orderText += `────────────────────\n`;
-    orderText += `🏦 *الدفع عبر التحويل البنكي:*\n`;
-    orderText += `• اسم الشركة: الفؤاد او الهرم\n`;
-    orderText += `• العنوان: ريف دمشق\n`;
-    orderText += `• اسم المستفيد: حمزه عبد الرحمن\n\n`;
-    
-    orderText += `📱 *الدفع عبر المحافظ الإلكترونية:*\n`;
-    orderText += `• شام كاش: [رقم شام كاش]\n`;
-    orderText += `• سيرياتيل كاش: 963995606528\n`;
-    orderText += `• USDT: [عنوان المحفظة]\n\n`;
-    
-    orderText += `📋 *خطوات إكمال الطلب:*\n`;
-    orderText += `1. قم بإجراء التحويل للمبلغ المطلوب\n`;
-    orderText += `2. التقط صورة واضحة لإشعار التحويل\n`;
-    orderText += `3. أرسل الصورة في هذه المحادثة\n`;
-    orderText += `4. سنقوم بالتأكيد خلال دقائق ⏱️\n\n`;
-    
-    orderText += `👤 *معلومات العميل:*\n`;
-    orderText += `────────────────────\n`;
-    orderText += `الاسم الكامل: _________\n`;
-    orderText += `رقم الهاتف: _________\n\n`;
-    
-    orderText += `📍 *عنوان التوصيل:*\n`;
-    orderText += `────────────────────\n`;
-    orderText += `المحافظة: _________\n`;
-    orderText += `المنطقة: _________\n`;
-    orderText += `العنوان التفصيلي: _________\n\n`;
-    
-    orderText += `⚡ *شكراً لثقتكم بنا* 🚀\n`;
-    orderText += `سنقوم بالتوصيل خلال 10 دقائق`;
-
-    // ترميز النص للرابط
-    const encodedText = encodeURIComponent(orderText);
-    
-    // رقم الواتساب - تأكد من استخدام الرقم الصحيح
-    const phoneNumber = '963964659342';
-    
-    // إنشاء رابط الواتساب الصحيح
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
-    
-    console.log('📞 رابط الواتساب:', whatsappUrl);
-    
-    // فتح نافذة جديدة للواتساب
-    window.open(whatsappUrl, '_blank');
-    
-    // تفريغ السلة بعد الإرسال
-    cart = [];
-    updateCart();
-    
-    // إغلاق السلة
-    const cartSidebar = document.getElementById('cart-sidebar');
-    if (cartSidebar) {
-        cartSidebar.classList.remove('active');
-    }
-    
-    showNotification('📱 تم فتح الواتساب لإكمال الطلب');
-}
-
-// ==================== 🔔 الإشعارات ====================
-
-// إشعارات
-function showNotification(message) {
-    // إنشاء عنصر الإشعار
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(45deg, #8A2BE2, #00FFFF);
-        color: white;
-        padding: 15px 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
-        z-index: 10000;
-        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s;
-        font-weight: bold;
-        border: 1px solid rgba(255,255,255,0.2);
-        max-width: 300px;
-        word-wrap: break-word;
-    `;
-    notification.textContent = message;
-    
-    // إضافة أنيميشن إذا لم تكن موجودة
-    if (!document.querySelector('#notification-styles')) {
-        const style = document.createElement('style');
-        style.id = 'notification-styles';
-        style.textContent = `
-            @keyframes slideInRight {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @keyframes fadeOut {
-                from { opacity: 1; }
-                to { opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    document.body.appendChild(notification);
-    
-    // إزالة الإشعار بعد 3 ثواني
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-        }
-    }, 3000);
-}
-
-// ==================== 🎯 الأحداث والمستمعين ====================
-
-// إغلاق السلة عند الضغط خارجها
-document.addEventListener('click', function(event) {
-    const cartSidebar = document.getElementById('cart-sidebar');
-    const cartIcon = document.querySelector('.cart-icon') || document.querySelector('.cart-button');
-    
-    if (cartSidebar && cartIcon) {
-        const isClickInsideCart = cartSidebar.contains(event.target);
-        const isClickOnCartIcon = cartIcon.contains(event.target);
-        
-        if (!isClickInsideCart && !isClickOnCartIcon && cartSidebar.classList.contains('active')) {
-            cartSidebar.classList.remove('active');
-        }
-    }
-});
-
 // ==================== 🎮 تفعيل الأقسام ====================
 
 // تصفية الأقسام
@@ -317,14 +51,371 @@ function setupCategoryFilter() {
     });
 }
 
+// ==================== 🛒 دوال السلة المحسنة ====================
+
+// عرض/إخفاء السلة
+function toggleCart() {
+    const cartSidebar = document.getElementById('cart-sidebar');
+    console.log('🛒 toggleCart called - Element:', cartSidebar);
+    
+    if (cartSidebar) {
+        cartSidebar.classList.toggle('active');
+        console.log('✅ السلة:', cartSidebar.classList.contains('active') ? 'مفتوحة' : 'مغلقة');
+    } else {
+        console.error('❌ لم يتم العثور على عنصر سلة التسوق');
+    }
+}
+
+// إضافة منتج للسلة (نسخة محسنة)
+function addToCart(productId, name, price, category = 'general') {
+    console.log('🛍️ إضافة منتج:', { productId, name, price, category });
+    
+    // البحث إذا المنتج موجود مسبقاً
+    const existingItem = cart.find(item => item.id === productId);
+    
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({
+            id: productId,
+            name: name,
+            price: price,
+            quantity: 1,
+            category: category
+        });
+    }
+    
+    updateCart();
+    showNotification('✅ تم إضافة المنتج للسلة');
+    
+    // فتح السلة تلقائياً بعد الإضافة
+    setTimeout(() => {
+        const cartSidebar = document.getElementById('cart-sidebar');
+        if (cartSidebar && !cartSidebar.classList.contains('active')) {
+            cartSidebar.classList.add('active');
+        }
+    }, 300);
+}
+
+// إضافة منتج مع السعر الحقيقي
+function addToCartWithRealPrice(productId, name, displayPrice, realPrice, category = 'general') {
+    console.log('💰 إضافة منتج بالسعر الحقيقي:', { productId, name, displayPrice, realPrice });
+    
+    // حساب التوفير
+    const saving = displayPrice - realPrice;
+    const savingPercentage = Math.round((saving / displayPrice) * 100);
+    
+    // عرض تأكيد مع السعر الحقيقي
+    const confirmed = confirm(
+        `🛒 ${name}\n\n` +
+        `السعر الوهمي: ${displayPrice.toLocaleString()} ل.س\n` +
+        `✅ السعر الحقيقي: ${realPrice.toLocaleString()} ل.س\n` +
+        `💰 وفرت: ${saving.toLocaleString()} ل.س (${savingPercentage}%)\n\n` +
+        `هل تريد إضافة هذا المنتج إلى السلة؟`
+    );
+    
+    if (confirmed) {
+        addToCart(productId, name, realPrice, category);
+    }
+}
+
+// تحديث عرض السلة (محسن)
+function updateCart() {
+    const cartItems = document.getElementById('cart-items');
+    const cartCount = document.getElementById('cart-count');
+    const cartTotal = document.getElementById('cart-total');
+    
+    console.log('🔄 تحديث السلة - العناصر:', cartItems, cartCount, cartTotal);
+    
+    if (!cartItems || !cartCount || !cartTotal) {
+        console.error('❌ عناصر السلة غير موجودة في HTML');
+        return;
+    }
+    
+    // تحديث العدد
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = totalItems;
+    
+    // تحديث العناصر
+    cartItems.innerHTML = '';
+    total = 0;
+    
+    if (cart.length === 0) {
+        cartItems.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">السلة فارغة</p>';
+    } else {
+        cart.forEach((item, index) => {
+            const itemTotal = item.price * item.quantity;
+            total += itemTotal;
+            
+            const cartItem = document.createElement('div');
+            cartItem.className = 'cart-item';
+            cartItem.innerHTML = `
+                <div class="cart-item-info">
+                    <strong>${item.name}</strong>
+                    <br>
+                    <small>${item.price.toLocaleString()} ل.س × ${item.quantity}</small>
+                    ${item.category ? `<br><small style="color: #666;">القسم: ${getCategoryName(item.category)}</small>` : ''}
+                </div>
+                <div class="cart-item-actions">
+                    <strong>${(item.price * item.quantity).toLocaleString()} ل.س</strong>
+                    <div style="display: flex; gap: 5px; margin-top: 5px;">
+                        <button class="quantity-btn" onclick="updateQuantity(${index}, -1)" style="padding: 2px 8px; font-size: 12px;">-</button>
+                        <button class="quantity-btn" onclick="updateQuantity(${index}, 1)" style="padding: 2px 8px; font-size: 12px;">+</button>
+                        <button class="remove-btn" onclick="removeFromCart(${index})" title="إزالة المنتج" style="padding: 2px 8px; font-size: 12px;">
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            cartItems.appendChild(cartItem);
+        });
+    }
+    
+    // تحديث المجموع
+    cartTotal.textContent = `المجموع: ${total.toLocaleString()} ل.س`;
+    
+    // حفظ في التخزين المحلي
+    saveCartToStorage();
+}
+
+// تحديث كمية المنتج
+function updateQuantity(index, change) {
+    if (index >= 0 && index < cart.length) {
+        const item = cart[index];
+        item.quantity += change;
+        
+        if (item.quantity <= 0) {
+            cart.splice(index, 1);
+            showNotification(`🗑️ تم إزالة ${item.name} من السلة`);
+        } else {
+            showNotification(`🔄 تم تحديث كمية ${item.name} إلى ${item.quantity}`);
+        }
+        
+        updateCart();
+    }
+}
+
+// إزالة منتج من السلة
+function removeFromCart(index) {
+    if (index >= 0 && index < cart.length) {
+        const removedItem = cart[index];
+        cart.splice(index, 1);
+        updateCart();
+        showNotification(`🗑️ تم إزالة ${removedItem.name} من السلة`);
+    }
+}
+
+// تفريغ السلة بالكامل
+function clearCart() {
+    if (cart.length > 0) {
+        const confirmed = confirm('هل أنت متأكد من تفريغ السلة بالكامل؟');
+        if (confirmed) {
+            cart = [];
+            updateCart();
+            showNotification('🗑️ تم تفريغ السلة بالكامل');
+        }
+    } else {
+        showNotification('ℹ️ السلة فارغة بالفعل');
+    }
+}
+
+// الحصول على اسم القسم
+function getCategoryName(category) {
+    const categories = {
+        'social': 'التطبيقات',
+        'battle': 'ألعاب المعارك',
+        'strategy': 'ألعاب الاستراتيجية',
+        'sports': 'ألعاب الرياضة',
+        'casual': 'ألعاب Casual',
+        'general': 'عام'
+    };
+    return categories[category] || category;
+}
+
+// ==================== 📱 دوال الواتساب المحسنة ====================
+
+// إرسال الطلب للواتساب مع معلومات الدفع
+function sendToWhatsApp() {
+    if (cart.length === 0) {
+        showNotification('❌ السلة فارغة! أضف منتجات أولاً');
+        return;
+    }
+    
+    // تحضير نص الطلب مع معلومات الدفع
+    let orderText = `🎯 *طلب جديد من متجر Top للشحن* 🎯\n\n`;
+    orderText += `📦 *تفاصيل الطلب:*\n`;
+    orderText += `────────────────────\n`;
+    
+    cart.forEach(item => {
+        orderText += `🛍️ *${item.name}*\n`;
+        orderText += `💰 السعر: ${item.price.toLocaleString()} ل.س\n`;
+        orderText += `📦 الكمية: ${item.quantity}\n`;
+        orderText += `🔢 المجموع: ${(item.price * item.quantity).toLocaleString()} ل.س\n`;
+        orderText += `📂 القسم: ${getCategoryName(item.category)}\n`;
+        orderText += `────────────────────\n`;
+    });
+    
+    orderText += `\n💰 *المجموع الكلي: ${total.toLocaleString()} ل.س*\n\n`;
+    
+    // إضافة معلومات الدفع
+    orderText += `💳 *معلومات الدفع:*\n`;
+    orderText += `────────────────────\n`;
+    orderText += `📱 *الدفع عبر المحافظ الإلكترونية:*\n`;
+    orderText += `• سيرياتيل كاش: 963995606528\n`;
+    orderText += `• شام كاش: [رقم شام كاش]\n\n`;
+    
+    orderText += `📋 *خطوات إكمال الطلب:*\n`;
+    orderText += `1. قم بإجراء التحويل للمبلغ المطلوب\n`;
+    orderText += `2. التقط صورة واضحة لإشعار التحويل\n`;
+    orderText += `3. أرسل الصورة في هذه المحادثة\n`;
+    orderText += `4. سنقوم بالتأكيد خلال دقائق ⏱️\n\n`;
+    
+    orderText += `👤 *معلومات العميل:*\n`;
+    orderText += `────────────────────\n`;
+    orderText += `الاسم الكامل: _________\n`;
+    orderText += `رقم الهاتف: _________\n\n`;
+    
+    orderText += `📍 *عنوان التوصيل:*\n`;
+    orderText += `────────────────────\n`;
+    orderText += `المحافظة: _________\n`;
+    orderText += `المنطقة: _________\n`;
+    orderText += `العنوان التفصيلي: _________\n\n`;
+    
+    orderText += `⚡ *شكراً لثقتكم بنا* 🚀\n`;
+    orderText += `سنقوم بالتوصيل خلال 10 دقائق`;
+
+    // ترميز النص للرابط
+    const encodedText = encodeURIComponent(orderText);
+    
+    // رقم الواتساب
+    const phoneNumber = '963964659342';
+    
+    // إنشاء رابط الواتساب الصحيح
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
+    
+    console.log('📞 رابط الواتساب:', whatsappUrl);
+    
+    // فتح نافذة جديدة للواتساب
+    window.open(whatsappUrl, '_blank');
+    
+    // تفريغ السلة بعد الإرسال
+    cart = [];
+    updateCart();
+    
+    // إغلاق السلة
+    const cartSidebar = document.getElementById('cart-sidebar');
+    if (cartSidebar) {
+        cartSidebar.classList.remove('active');
+    }
+    
+    showNotification('📱 تم فتح الواتساب لإكمال الطلب');
+}
+
+// ==================== 🔔 نظام الإشعارات ====================
+
+// إشعارات
+function showNotification(message) {
+    // إنشاء عنصر الإشعار
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        z-index: 10000;
+        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s;
+        font-weight: bold;
+        border: 1px solid rgba(255,255,255,0.2);
+        max-width: 300px;
+        word-wrap: break-word;
+        font-family: 'Cairo', sans-serif;
+    `;
+    notification.textContent = message;
+    
+    // إضافة أنيميشن إذا لم تكن موجودة
+    if (!document.querySelector('#notification-styles')) {
+        const style = document.createElement('style');
+        style.id = 'notification-styles';
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(notification);
+    
+    // إزالة الإشعار بعد 3 ثواني
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 3000);
+}
+
+// ==================== 💾 نظام التخزين ====================
+
+// حفظ السلة في localStorage
+function saveCartToStorage() {
+    try {
+        localStorage.setItem('topCart', JSON.stringify(cart));
+        console.log('💾 تم حفظ السلة في التخزين المحلي');
+    } catch (error) {
+        console.error('❌ خطأ في حفظ السلة:', error);
+    }
+}
+
+// تحميل السلة من localStorage
+function loadCartFromStorage() {
+    try {
+        const savedCart = localStorage.getItem('topCart');
+        if (savedCart) {
+            cart = JSON.parse(savedCart);
+            updateCart();
+            console.log('📂 تم تحميل السلة من التخزين المحلي:', cart);
+        }
+    } catch (error) {
+        console.error('❌ خطأ في تحميل السلة:', error);
+    }
+}
+
+// ==================== 🎯 الأحداث والمستمعين ====================
+
+// إغلاق السلة عند الضغط خارجها
+document.addEventListener('click', function(event) {
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const cartIcon = document.querySelector('.cart-icon') || document.querySelector('.cart-button');
+    
+    if (cartSidebar && cartIcon) {
+        const isClickInsideCart = cartSidebar.contains(event.target);
+        const isClickOnCartIcon = cartIcon.contains(event.target);
+        
+        if (!isClickInsideCart && !isClickOnCartIcon && cartSidebar.classList.contains('active')) {
+            cartSidebar.classList.remove('active');
+        }
+    }
+});
+
 // ==================== 🚀 التهيئة ====================
 
 // التهيئة الأولية عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 متجر Top للشحن التطبيقات - جاهز للتشغيل');
+    console.log('🚀 متجر Top للشحن - جاهز للتشغيل');
     
-    // تحديث السلة أول مرة
-    updateCart();
+    // تحميل السلة من التخزين المحلي
+    loadCartFromStorage();
     
     // إعداد تصفية التصنيفات
     setupCategoryFilter();
@@ -349,44 +440,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// ==================== 🛠️ أدوات مساعدة ====================
+// ==================== 🌟 جعل الدوال متاحة عالمياً ====================
 
-// حفظ السلة في localStorage
-function saveCartToStorage() {
-    try {
-        localStorage.setItem('topCart', JSON.stringify(cart));
-        console.log('💾 تم حفظ السلة في التخزين المحلي');
-    } catch (error) {
-        console.error('❌ خطأ في حفظ السلة:', error);
-    }
-}
-
-// تحميل السلة من localStorage
-function loadCartFromStorage() {
-    try {
-        const savedCart = localStorage.getItem('topCart');
-        if (savedCart) {
-            cart = JSON.parse(savedCart);
-            updateCart();
-            console.log('📂 تم تحميل السلة من التخزين المحلي');
-        }
-    } catch (error) {
-        console.error('❌ خطأ في تحميل السلة:', error);
-    }
-}
-
-// تحديث السلة مع الحفظ
-function updateCartAndSave() {
-    updateCart();
-    saveCartToStorage();
-}
-
-console.log('🛒 نظام السلة جاهز للعمل!');
-
-// جعل الدوال متاحة عالمياً
 window.addToCart = addToCart;
+window.addToCartWithRealPrice = addToCartWithRealPrice;
 window.removeFromCart = removeFromCart;
 window.toggleCart = toggleCart;
 window.sendToWhatsApp = sendToWhatsApp;
 window.clearCart = clearCart;
 window.updateCart = updateCart;
+window.updateQuantity = updateQuantity;
+
+console.log('🛒 نظام السلة المحسن جاهز للعمل!');
