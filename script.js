@@ -108,8 +108,15 @@ function removeFromCart(index) {
     }
 }
 
+// تفريغ السلة بالكامل
+function clearCart() {
+    cart = [];
+    updateCart();
+    showNotification('🗑️ تم تفريغ السلة بالكامل');
+}
+
 // ==================== 📱 دوال الواتساب ====================
-```javascript
+
 // إرسال الطلب للواتساب مع معلومات الدفع
 function sendToWhatsApp() {
     if (cart.length === 0) {
@@ -136,13 +143,13 @@ function sendToWhatsApp() {
     orderText += `💳 *معلومات الدفع:*\n`;
     orderText += `────────────────────\n`;
     orderText += `🏦 *الدفع عبر التحويل البنكي:*\n`;
-    orderText += `• اسم الشركة: الفؤاد او الهرم]\n`;
-    orderText += `• العنوان : [ريف دمشق]\n`;
-    orderText += `• اسم المستفيد: حمزه عبد الرحمن]\n\n`;
+    orderText += `• اسم الشركة: الفؤاد او الهرم\n`;
+    orderText += `• العنوان: ريف دمشق\n`;
+    orderText += `• اسم المستفيد: حمزه عبد الرحمن\n\n`;
     
     orderText += `📱 *الدفع عبر المحافظ الإلكترونية:*\n`;
     orderText += `• شام كاش: [رقم شام كاش]\n`;
-    orderText += `• سيرياتيل كاش: 963995606528]\n`;
+    orderText += `• سيرياتيل كاش: 963995606528\n`;
     orderText += `• USDT: [عنوان المحفظة]\n\n`;
     
     orderText += `📋 *خطوات إكمال الطلب:*\n`;
@@ -163,23 +170,31 @@ function sendToWhatsApp() {
     orderText += `العنوان التفصيلي: _________\n\n`;
     
     orderText += `⚡ *شكراً لثقتكم بنا* 🚀\n`;
-    orderText += `سنقوم بالتوصيل خلال 10دقايق ساعة`;
+    orderText += `سنقوم بالتوصيل خلال 10 دقائق`;
 
     // ترميز النص للرابط
     const encodedText = encodeURIComponent(orderText);
     
-    // رقم الواتساب - غير هذا الرقم لرقمك الحقيقي
-    const phoneNumber = '963964659342'; // 🔄 غير هذا الرقم
+    // رقم الواتساب - تأكد من استخدام الرقم الصحيح
+    const phoneNumber = '963964659342';
     
-    // فتح الواتساب
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${https://wa.me/message/AI3MMIEL5HIEN1}`;
-    console.log('📞 رابط الواتساب:', https://wa.me/message/AI3MMIEL5HIEN1);
+    // إنشاء رابط الواتساب الصحيح
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
+    
+    console.log('📞 رابط الواتساب:', whatsappUrl);
+    
+    // فتح نافذة جديدة للواتساب
     window.open(whatsappUrl, '_blank');
     
     // تفريغ السلة بعد الإرسال
     cart = [];
     updateCart();
-    toggleCart();
+    
+    // إغلاق السلة
+    const cartSidebar = document.getElementById('cart-sidebar');
+    if (cartSidebar) {
+        cartSidebar.classList.remove('active');
+    }
     
     showNotification('📱 تم فتح الواتساب لإكمال الطلب');
 }
@@ -204,8 +219,27 @@ function showNotification(message) {
         animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s;
         font-weight: bold;
         border: 1px solid rgba(255,255,255,0.2);
+        max-width: 300px;
+        word-wrap: break-word;
     `;
     notification.textContent = message;
+    
+    // إضافة أنيميشن إذا لم تكن موجودة
+    if (!document.querySelector('#notification-styles')) {
+        const style = document.createElement('style');
+        style.id = 'notification-styles';
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
     
     document.body.appendChild(notification);
     
@@ -222,45 +256,29 @@ function showNotification(message) {
 // إغلاق السلة عند الضغط خارجها
 document.addEventListener('click', function(event) {
     const cartSidebar = document.getElementById('cart-sidebar');
-    const cartIcon = document.querySelector('.cart-icon');
+    const cartIcon = document.querySelector('.cart-icon') || document.querySelector('.cart-button');
     
     if (cartSidebar && cartIcon) {
         const isClickInsideCart = cartSidebar.contains(event.target);
         const isClickOnCartIcon = cartIcon.contains(event.target);
         
-        if (!isClickInsideCart && !isClickOnCartIcon) {
+        if (!isClickInsideCart && !isClickOnCartIcon && cartSidebar.classList.contains('active')) {
             cartSidebar.classList.remove('active');
         }
     }
-});
-
-// التهيئة الأولية عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 متجر Top للشحن التطبيقات - جاهز للتشغيل');
-    
-    // تحديث السلة أول مرة
-    updateCart();
-    
-    // اختبار عناصر السلة
-    const cartElements = [
-        'cart-sidebar',
-        'cart-items', 
-        'cart-count',
-        'cart-total'
-    ];
-    
-    cartElements.forEach(id => {
-        const element = document.getElementById(id);
-        console.log(`${element ? '✅' : '❌'} عنصر ${id}:`, element ? 'موجود' : 'مفقود');
-    });
 });
 
 // ==================== 🎮 تفعيل الأقسام ====================
 
 // تصفية الأقسام
 function setupCategoryFilter() {
-    const categoryButtons = document.querySelectorAll('.cat-btn');
-    const categorySections = document.querySelectorAll('.category-section');
+    const categoryButtons = document.querySelectorAll('.cat-btn, .category-btn');
+    const categorySections = document.querySelectorAll('.category-section, .products-section');
+    
+    if (categoryButtons.length === 0) {
+        console.log('ℹ️ لم يتم العثور على أزرار التصنيفات');
+        return;
+    }
     
     categoryButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -269,9 +287,11 @@ function setupCategoryFilter() {
             // إضافة النشاط للزر المختار
             this.classList.add('active');
             
-            const category = this.dataset.category;
+            const category = this.dataset.category || this.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
             
-            if (category === 'all') {
+            console.log('🎯 تصفية حسب:', category);
+            
+            if (category === 'all' || !category) {
                 // إظهار جميع الأقسام
                 categorySections.forEach(section => {
                     section.style.display = 'block';
@@ -288,17 +308,85 @@ function setupCategoryFilter() {
                 if (targetSection) {
                     targetSection.style.display = 'block';
                     // التمرير للقسم المختار
-                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    console.warn('⚠️ القسم غير موجود:', category);
                 }
             }
         });
     });
 }
 
-// تفعيل عند تحميل الصفحة
+// ==================== 🚀 التهيئة ====================
+
+// التهيئة الأولية عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', function() {
-    setupCategoryFilter();
+    console.log('🚀 متجر Top للشحن التطبيقات - جاهز للتشغيل');
+    
+    // تحديث السلة أول مرة
     updateCart();
+    
+    // إعداد تصفية التصنيفات
+    setupCategoryFilter();
+    
+    // اختبار عناصر السلة
+    const cartElements = [
+        'cart-sidebar',
+        'cart-items', 
+        'cart-count',
+        'cart-total'
+    ];
+    
+    cartElements.forEach(id => {
+        const element = document.getElementById(id);
+        console.log(`${element ? '✅' : '❌'} عنصر ${id}:`, element ? 'موجود' : 'مفقود');
+    });
+    
+    // إضافة أزرار تفريغ السلة إذا كانت موجودة
+    const clearCartBtn = document.getElementById('clear-cart');
+    if (clearCartBtn) {
+        clearCartBtn.addEventListener('click', clearCart);
+    }
 });
 
+// ==================== 🛠️ أدوات مساعدة ====================
+
+// حفظ السلة في localStorage
+function saveCartToStorage() {
+    try {
+        localStorage.setItem('topCart', JSON.stringify(cart));
+        console.log('💾 تم حفظ السلة في التخزين المحلي');
+    } catch (error) {
+        console.error('❌ خطأ في حفظ السلة:', error);
+    }
+}
+
+// تحميل السلة من localStorage
+function loadCartFromStorage() {
+    try {
+        const savedCart = localStorage.getItem('topCart');
+        if (savedCart) {
+            cart = JSON.parse(savedCart);
+            updateCart();
+            console.log('📂 تم تحميل السلة من التخزين المحلي');
+        }
+    } catch (error) {
+        console.error('❌ خطأ في تحميل السلة:', error);
+    }
+}
+
+// تحديث السلة مع الحفظ
+function updateCartAndSave() {
+    updateCart();
+    saveCartToStorage();
+}
+
 console.log('🛒 نظام السلة جاهز للعمل!');
+
+// جعل الدوال متاحة عالمياً
+window.addToCart = addToCart;
+window.removeFromCart = removeFromCart;
+window.toggleCart = toggleCart;
+window.sendToWhatsApp = sendToWhatsApp;
+window.clearCart = clearCart;
+window.updateCart = updateCart;
