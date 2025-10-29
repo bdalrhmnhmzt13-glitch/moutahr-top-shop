@@ -1,454 +1,357 @@
-// متغيرات السلة
-let cart = [];
-let total = 0;
+// 📦 بيانات المنتجات 
+const PRODUCTS_DATA = [
+    // تطبيقات اجتماعية (Social)
+    { id: 501, name: "Soul Chill", price: 15000, category: "social", color: "#9b59b6", description: "عملات وعناصر Soul Chill", icon: "fa-solid fa-music", realPrice: 12000 },
+    { id: 502, name: "Bigo Live", price: 12000, category: "social", color: "#e74c3c", description: "عملات وعناصر Bigo Live", icon: "fa-solid fa-video", realPrice: 9000 },
+    { id: 503, name: "Poppo Live", price: 13000, category: "social", color: "#3498db", description: "عملات وعناصر Poppo Live", icon: "fa-solid fa-camera", realPrice: 10000 },
+    { id: 505, name: "Ahlan Chat", price: 10000, category: "social", color: "#f39c12", description: "عملات وعناصر Ahlan Chat", icon: "fa-solid fa-comment-dots", realPrice: 7000 },
 
-// ==================== 🎮 تفعيل الأقسام ====================
-
-// تصفية الأقسام
-function setupCategoryFilter() {
-    const categoryButtons = document.querySelectorAll('.cat-btn, .category-btn');
-    const categorySections = document.querySelectorAll('.category-section, .products-section');
+    // ألعاب المعارك (Battle)
+    { id: 603, name: "ببجي - 325 شدة", price: 50000, category: "battle", color: "#e74c3c", description: "325 شدة للعبة ببجي", icon: "fa-solid fa-gun", realPrice: 40000 },
+    { id: 604, name: "فري فاير - 520 جوهرة", price: 55000, category: "battle", color: "#3498db", description: "520 جوهرة للعبة فري فاير", icon: "fa-solid fa-gem", realPrice: 45000 },
+    { id: 102, name: "Genshin Impact", price: 15000, category: "battle", color: "#3498db", description: "كريستالات Genshin Impact", icon: "fa-solid fa-wand-magic", realPrice: 12000 },
+    { id: 104, name: "Farlight 84", price: 13000, category: "battle", color: "#9b59b6", description: "عملات وعناصر Farlight 84", icon: "fa-solid fa-rocket", realPrice: 10000 },
     
-    if (categoryButtons.length === 0) {
-        console.log('ℹ️ لم يتم العثور على أزرار التصنيفات');
+    // ألعاب الاستراتيجية (Strategy)
+    { id: 201, name: "انتقام السلاطين", price: 20000, category: "strategy", color: "#d35400", description: "عملات انتقام السلاطين", icon: "fa-solid fa-shield-halved", realPrice: 16000 },
+    { id: 203, name: "King of Avalon", price: 19000, category: "strategy", color: "#2ecc71", description: "عملات King of Avalon", icon: "fa-solid fa-crown", realPrice: 15000 },
+
+    // ألعاب الرياضة (Sports)
+    { id: 301, name: "FC Mobile", price: 15000, category: "sports", color: "#27ae60", description: "عملات FC Mobile", icon: "fa-solid fa-futbol", realPrice: 12000 },
+    
+    // ألعاب Casual
+    { id: 402, name: "Yalla Ludo", price: 9000, category: "casual", color: "#e74c3c", description: "عملات Yalla Ludo", icon: "fa-solid fa-dice", realPrice: 7000 }
+];
+
+// 🛒 حالة المتجر العامة
+let cart = [];
+let currentCategory = 'all';
+
+// --------------------------------------------------------
+// 🛠️ وظائف مساعدة لتخزين البيانات
+// --------------------------------------------------------
+
+/**
+ * دالة مساعدة لحفظ السلة في التخزين المحلي للمتصفح (Local Storage)
+ */
+function saveCart() {
+    localStorage.setItem('shoppingCart', JSON.stringify(cart));
+}
+
+/**
+ * دالة مساعدة لتحميل السلة من التخزين المحلي
+ */
+function loadCart() {
+    const savedCart = localStorage.getItem('shoppingCart');
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+    }
+}
+
+// --------------------------------------------------------
+// ⚙️ وظائف العرض (DOM Manipulation)
+// --------------------------------------------------------
+
+/**
+ * دالة مساعدة لتحويل الأرقام إلى نص مع فواصل (مثال: 10,000)
+ */
+const formatCurrency = (num) => `${num.toLocaleString()} ل.س`;
+
+/**
+ * إنشاء HTML لبطاقة منتج واحد
+ */
+function createProductCard(product) {
+    return `
+        <div class="product" data-id="${product.id}">
+            <div class="product-image" style="background: ${product.color};">
+                <i class="${product.icon}"></i>
+            </div>
+            <h3 class="product-name">${product.name}</h3>
+            <p class="product-description">${product.description}</p>
+            <div class="product-price">${formatCurrency(product.price)}</div>
+            <button class="buy-now-btn" onclick="showRealPrice(${product.id})">
+                <i class="fa-solid fa-money-check-dollar"></i> معرفة السعر الحقيقي
+            </button>
+        </div>
+    `;
+}
+
+/**
+ * عرض المنتجات بناءً على الفئة المختارة
+ */
+function displayProducts() {
+    const productsContainer = document.getElementById('productsContainer');
+    const sectionTitle = document.getElementById('sectionTitle');
+
+    const filteredProducts = currentCategory === 'all'
+        ? PRODUCTS_DATA
+        : PRODUCTS_DATA.filter(product => product.category === currentCategory);
+
+    // تحديث عنوان القسم
+    const categoryNames = {
+        'all': 'جميع المنتجات', 'social': 'التطبيقات الاجتماعية', 'battle': 'ألعاب المعارك',
+        'strategy': 'ألعاب الاستراتيجية', 'sports': 'ألعاب الرياضة', 'casual': 'ألعاب Casual'
+    };
+    sectionTitle.innerHTML = `🛍️ ${categoryNames[currentCategory]}`;
+
+    if (filteredProducts.length === 0) {
+        productsContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #7f8c8d; font-size: 1.2rem;">لا توجد منتجات في هذا القسم حالياً.</p>`;
         return;
     }
-    
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // إزالة النشاط من جميع الأزرار
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            // إضافة النشاط للزر المختار
-            this.classList.add('active');
-            
-            const category = this.dataset.category || this.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
-            
-            console.log('🎯 تصفية حسب:', category);
-            
-            if (category === 'all' || !category) {
-                // إظهار جميع الأقسام
-                categorySections.forEach(section => {
-                    section.style.display = 'block';
-                });
-                // التمرير للأعلى
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // إخفاء جميع الأقسام
-                categorySections.forEach(section => {
-                    section.style.display = 'none';
-                });
-                // إظهار القسم المختار فقط
-                const targetSection = document.getElementById(category);
-                if (targetSection) {
-                    targetSection.style.display = 'block';
-                    // التمرير للقسم المختار
-                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                } else {
-                    console.warn('⚠️ القسم غير موجود:', category);
-                }
-            }
-        });
-    });
+
+    productsContainer.innerHTML = filteredProducts.map(createProductCard).join('');
 }
 
-// ==================== 🛒 دوال السلة المحسنة ====================
+/**
+ * إنشاء HTML لعنصر واحد داخل السلة (مُحسَّن)
+ */
+function createCartItemHTML(item, index) {
+    // العثور على المنتج الأصلي للحصول على الأيقونة واللون
+    const originalProduct = PRODUCTS_DATA.find(p => p.id === item.id);
+    const itemIcon = originalProduct ? `<i class="${originalProduct.icon}"></i>` : '📦';
+    const itemColor = originalProduct ? originalProduct.color : '#bdc3c7';
+    const subtotal = item.price * item.quantity;
 
-// عرض/إخفاء السلة
-function toggleCart() {
-    const cartSidebar = document.getElementById('cart-sidebar');
-    console.log('🛒 toggleCart called - Element:', cartSidebar);
+    return `
+        <div class="cart-item">
+            <div class="cart-item-details">
+                <div class="item-icon" style="background-color: ${itemColor};">${itemIcon}</div>
+                <div class="item-name-qty">
+                    <span class="name">${item.name}</span>
+                    <span class="item-price">السعر: ${formatCurrency(item.price)} / الوحدة</span>
+                </div>
+            </div>
+            <div class="cart-item-controls">
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="updateQuantity(${index}, -1)"><i class="fa-solid fa-minus"></i></button>
+                    <span>${item.quantity}</span>
+                    <button class="quantity-btn" onclick="updateQuantity(${index}, 1)"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <button class="remove-btn" onclick="removeFromCart(${index})">
+                    <i class="fa-solid fa-trash-can"></i> إزالة
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+
+/**
+ * تحديث عرض السلة والإجمالي وحفظها في التخزين المحلي
+ */
+function updateCartDisplay() {
+    const cartItemsContainer = document.getElementById('cartItems');
+    const cartCount = document.getElementById('cartCount');
+    const cartTotalElement = document.getElementById('cartTotal');
+    const checkoutBtn = document.getElementById('checkoutBtn');
     
-    if (cartSidebar) {
-        cartSidebar.classList.toggle('active');
-        console.log('✅ السلة:', cartSidebar.classList.contains('active') ? 'مفتوحة' : 'مغلقة');
+    // حساب الإجمالي والكمية
+    let total = 0;
+    const totalItems = cart.reduce((sum, item) => {
+        total += item.price * item.quantity;
+        return sum + item.quantity;
+    }, 0);
+
+    // تحديث العداد والإجمالي وحالة الزر
+    cartCount.textContent = totalItems;
+    cartTotalElement.textContent = `الإجمالي: ${formatCurrency(total)}`;
+    checkoutBtn.disabled = cart.length === 0;
+
+    // تحديث قائمة العناصر
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;"><i class="fa-solid fa-box-open"></i> سلة التسوق فارغة حالياً.</p>';
     } else {
-        console.error('❌ لم يتم العثور على عنصر سلة التسوق');
+        cartItemsContainer.innerHTML = cart.map(createCartItemHTML).join('');
+    }
+
+    // 🔑 حفظ السلة بعد كل تحديث
+    saveCart(); 
+}
+
+
+// --------------------------------------------------------
+// 🧠 وظائف المنطق وتتبّع الأحداث
+// --------------------------------------------------------
+
+/**
+ * تفعيل عرض السعر الحقيقي وتتبّع حدث view_real_price
+ */
+function showRealPrice(productId) {
+    const product = PRODUCTS_DATA.find(p => p.id === productId);
+    if (!product) return;
+
+    // ** تتبّع الحدث المخصص لـ GA4: "عرض السعر الحقيقي" **
+    if (typeof gtag === 'function') {
+        gtag('event', 'view_real_price', {
+            product_id: product.id,
+            product_name: product.name,
+            currency: "SYP", 
+            value: product.realPrice 
+        });
+    }
+    
+    const saving = product.price - product.realPrice;
+    const savingPercentage = Math.round((saving / product.price) * 100);
+    
+    const confirmed = confirm(
+        `🛒 ${product.name}\n\n` +
+        `السعر الوهمي: ${formatCurrency(product.price)}\n` +
+        `✅ السعر الحقيقي: ${formatCurrency(product.realPrice)}\n` +
+        `💰 توفير: ${formatCurrency(saving)} (${savingPercentage}%)\n\n` +
+        `هل تريد إضافة هذا المنتج إلى السلة؟`
+    );
+    
+    if (confirmed) {
+        addToCart(productId);
     }
 }
 
-// إضافة منتج للسلة (نسخة محسنة)
-function addToCart(productId, name, price, category = 'general') {
-    console.log('🛍️ إضافة منتج:', { productId, name, price, category });
+/**
+ * تصفية المنتجات وتحديث زر الفئة النشط
+ */
+function filterCategory(category, clickedButton) {
+    currentCategory = category;
     
-    // البحث إذا المنتج موجود مسبقاً
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    clickedButton.classList.add('active');
+    
+    displayProducts();
+    scrollToTop(); // العودة للأعلى بعد التصفية
+}
+
+/**
+ * إضافة المنتج إلى السلة
+ */
+function addToCart(productId) {
+    const product = PRODUCTS_DATA.find(p => p.id === productId);
+    if (!product) return;
+
     const existingItem = cart.find(item => item.id === productId);
     
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
         cart.push({
-            id: productId,
-            name: name,
-            price: price,
-            quantity: 1,
-            category: category
+            id: product.id,
+            name: product.name,
+            price: product.realPrice,
+            quantity: 1
         });
     }
     
-    updateCart();
-    showNotification('✅ تم إضافة المنتج للسلة');
-    
-    // فتح السلة تلقائياً بعد الإضافة
-    setTimeout(() => {
-        const cartSidebar = document.getElementById('cart-sidebar');
-        if (cartSidebar && !cartSidebar.classList.contains('active')) {
-            cartSidebar.classList.add('active');
-        }
-    }, 300);
+    updateCartDisplay();
+    openCart();
 }
 
-// إضافة منتج مع السعر الحقيقي
-function addToCartWithRealPrice(productId, name, displayPrice, realPrice, category = 'general') {
-    console.log('💰 إضافة منتج بالسعر الحقيقي:', { productId, name, displayPrice, realPrice });
-    
-    // حساب التوفير
-    const saving = displayPrice - realPrice;
-    const savingPercentage = Math.round((saving / displayPrice) * 100);
-    
-    // عرض تأكيد مع السعر الحقيقي
-    const confirmed = confirm(
-        `🛒 ${name}\n\n` +
-        `السعر الوهمي: ${displayPrice.toLocaleString()} ل.س\n` +
-        `✅ السعر الحقيقي: ${realPrice.toLocaleString()} ل.س\n` +
-        `💰 وفرت: ${saving.toLocaleString()} ل.س (${savingPercentage}%)\n\n` +
-        `هل تريد إضافة هذا المنتج إلى السلة؟`
-    );
-    
-    if (confirmed) {
-        addToCart(productId, name, realPrice, category);
-    }
-}
-
-// تحديث عرض السلة (محسن)
-function updateCart() {
-    const cartItems = document.getElementById('cart-items');
-    const cartCount = document.getElementById('cart-count');
-    const cartTotal = document.getElementById('cart-total');
-    
-    console.log('🔄 تحديث السلة - العناصر:', cartItems, cartCount, cartTotal);
-    
-    if (!cartItems || !cartCount || !cartTotal) {
-        console.error('❌ عناصر السلة غير موجودة في HTML');
-        return;
-    }
-    
-    // تحديث العدد
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartCount.textContent = totalItems;
-    
-    // تحديث العناصر
-    cartItems.innerHTML = '';
-    total = 0;
-    
-    if (cart.length === 0) {
-        cartItems.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">السلة فارغة</p>';
-    } else {
-        cart.forEach((item, index) => {
-            const itemTotal = item.price * item.quantity;
-            total += itemTotal;
-            
-            const cartItem = document.createElement('div');
-            cartItem.className = 'cart-item';
-            cartItem.innerHTML = `
-                <div class="cart-item-info">
-                    <strong>${item.name}</strong>
-                    <br>
-                    <small>${item.price.toLocaleString()} ل.س × ${item.quantity}</small>
-                    ${item.category ? `<br><small style="color: #666;">القسم: ${getCategoryName(item.category)}</small>` : ''}
-                </div>
-                <div class="cart-item-actions">
-                    <strong>${(item.price * item.quantity).toLocaleString()} ل.س</strong>
-                    <div style="display: flex; gap: 5px; margin-top: 5px;">
-                        <button class="quantity-btn" onclick="updateQuantity(${index}, -1)" style="padding: 2px 8px; font-size: 12px;">-</button>
-                        <button class="quantity-btn" onclick="updateQuantity(${index}, 1)" style="padding: 2px 8px; font-size: 12px;">+</button>
-                        <button class="remove-btn" onclick="removeFromCart(${index})" title="إزالة المنتج" style="padding: 2px 8px; font-size: 12px;">
-                            ✕
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            cartItems.appendChild(cartItem);
-        });
-    }
-    
-    // تحديث المجموع
-    cartTotal.textContent = `المجموع: ${total.toLocaleString()} ل.س`;
-    
-    // حفظ في التخزين المحلي
-    saveCartToStorage();
-}
-
-// تحديث كمية المنتج
+/**
+ * تحديث كمية المنتج في السلة
+ */
 function updateQuantity(index, change) {
-    if (index >= 0 && index < cart.length) {
-        const item = cart[index];
-        item.quantity += change;
-        
-        if (item.quantity <= 0) {
-            cart.splice(index, 1);
-            showNotification(`🗑️ تم إزالة ${item.name} من السلة`);
-        } else {
-            showNotification(`🔄 تم تحديث كمية ${item.name} إلى ${item.quantity}`);
-        }
-        
-        updateCart();
-    }
-}
-
-// إزالة منتج من السلة
-function removeFromCart(index) {
-    if (index >= 0 && index < cart.length) {
-        const removedItem = cart[index];
+    const item = cart[index];
+    item.quantity += change;
+    
+    if (item.quantity <= 0) {
         cart.splice(index, 1);
-        updateCart();
-        showNotification(`🗑️ تم إزالة ${removedItem.name} من السلة`);
     }
+    
+    updateCartDisplay();
 }
 
-// تفريغ السلة بالكامل
-function clearCart() {
-    if (cart.length > 0) {
-        const confirmed = confirm('هل أنت متأكد من تفريغ السلة بالكامل؟');
-        if (confirmed) {
-            cart = [];
-            updateCart();
-            showNotification('🗑️ تم تفريغ السلة بالكامل');
-        }
-    } else {
-        showNotification('ℹ️ السلة فارغة بالفعل');
-    }
+/**
+ * إزالة منتج من السلة
+ */
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCartDisplay();
 }
 
-// الحصول على اسم القسم
-function getCategoryName(category) {
-    const categories = {
-        'social': 'التطبيقات',
-        'battle': 'ألعاب المعارك',
-        'strategy': 'ألعاب الاستراتيجية',
-        'sports': 'ألعاب الرياضة',
-        'casual': 'ألعاب Casual',
-        'general': 'عام'
-    };
-    return categories[category] || category;
-}
-
-// ==================== 📱 دوال الواتساب المحسنة ====================
-
-// إرسال الطلب للواتساب مع معلومات الدفع
+/**
+ * إنشاء رسالة واتساب وإرسالها مع تتبّع حدث الشراء (purchase)
+ */
 function sendToWhatsApp() {
     if (cart.length === 0) {
-        showNotification('❌ السلة فارغة! أضف منتجات أولاً');
+        alert('🛒 السلة فارغة!');
         return;
     }
+
+    // حساب الإجمالي لغرض تتبّع GA4
+    const totalValue = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
-    // تحضير نص الطلب مع معلومات الدفع
-    let orderText = `🎯 *طلب جديد من متجر Top للشحن* 🎯\n\n`;
-    orderText += `📦 *تفاصيل الطلب:*\n`;
-    orderText += `────────────────────\n`;
+    // ** تتبّع الحدث القياسي لـ GA4: "الشراء (Purchase)" **
+    if (typeof gtag === 'function') {
+        const itemsForGA = cart.map(item => ({
+            item_id: item.id.toString(),
+            item_name: item.name,
+            price: item.price,
+            quantity: item.quantity
+        }));
+
+        gtag('event', 'purchase', {
+            transaction_id: `WA-${Date.now()}`, 
+            value: totalValue, 
+            currency: "SYP", 
+            items: itemsForGA
+        });
+    }
     
+    // بناء رسالة الطلب
+    let message = "مرحباً، أريد شراء المنتجات التالية من Top للشحن:\n\n";
     cart.forEach(item => {
-        orderText += `🛍️ *${item.name}*\n`;
-        orderText += `💰 السعر: ${item.price.toLocaleString()} ل.س\n`;
-        orderText += `📦 الكمية: ${item.quantity}\n`;
-        orderText += `🔢 المجموع: ${(item.price * item.quantity).toLocaleString()} ل.س\n`;
-        orderText += `📂 القسم: ${getCategoryName(item.category)}\n`;
-        orderText += `────────────────────\n`;
+        message += `- ${item.name} (الكمية: ${item.quantity}، الإجمالي: ${formatCurrency(item.price * item.quantity)})\n`;
     });
     
-    orderText += `\n💰 *المجموع الكلي: ${total.toLocaleString()} ل.س*\n\n`;
+    message += `\nالمجموع الكلي: ${formatCurrency(totalValue)}\n`;
+    message += "\n(أرجو إضافة أي ملاحظات أو معلومات مثل ID الحساب هنا)";
     
-    // إضافة معلومات الدفع
-    orderText += `💳 *معلومات الدفع:*\n`;
-    orderText += `────────────────────\n`;
-    orderText += `📱 *الدفع عبر المحافظ الإلكترونية:*\n`;
-    orderText += `• سيرياتيل كاش: 963995606528\n`;
-    orderText += `• شام كاش: [رقم شام كاش]\n\n`;
+    const whatsappNumber = "963964659342";
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     
-    orderText += `📋 *خطوات إكمال الطلب:*\n`;
-    orderText += `1. قم بإجراء التحويل للمبلغ المطلوب\n`;
-    orderText += `2. التقط صورة واضحة لإشعار التحويل\n`;
-    orderText += `3. أرسل الصورة في هذه المحادثة\n`;
-    orderText += `4. سنقوم بالتأكيد خلال دقائق ⏱️\n\n`;
+    window.open(whatsappURL, '_blank');
     
-    orderText += `👤 *معلومات العميل:*\n`;
-    orderText += `────────────────────\n`;
-    orderText += `الاسم الكامل: _________\n`;
-    orderText += `رقم الهاتف: _________\n\n`;
-    
-    orderText += `📍 *عنوان التوصيل:*\n`;
-    orderText += `────────────────────\n`;
-    orderText += `المحافظة: _________\n`;
-    orderText += `المنطقة: _________\n`;
-    orderText += `العنوان التفصيلي: _________\n\n`;
-    
-    orderText += `⚡ *شكراً لثقتكم بنا* 🚀\n`;
-    orderText += `سنقوم بالتوصيل خلال 10 دقائق`;
-
-    // ترميز النص للرابط
-    const encodedText = encodeURIComponent(orderText);
-    
-    // رقم الواتساب
-    const phoneNumber = '963964659342';
-    
-    // إنشاء رابط الواتساب الصحيح
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
-    
-    console.log('📞 رابط الواتساب:', whatsappUrl);
-    
-    // فتح نافذة جديدة للواتساب
-    window.open(whatsappUrl, '_blank');
-    
-    // تفريغ السلة بعد الإرسال
+    // تفريغ السلة وحفظها
     cart = [];
-    updateCart();
+    updateCartDisplay();
+    closeCart();
     
-    // إغلاق السلة
-    const cartSidebar = document.getElementById('cart-sidebar');
-    if (cartSidebar) {
-        cartSidebar.classList.remove('active');
-    }
-    
-    showNotification('📱 تم فتح الواتساب لإكمال الطلب');
-}
-
-// ==================== 🔔 نظام الإشعارات ====================
-
-// إشعارات
-function showNotification(message) {
-    // إنشاء عنصر الإشعار
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-        color: white;
-        padding: 15px 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
-        z-index: 10000;
-        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s;
-        font-weight: bold;
-        border: 1px solid rgba(255,255,255,0.2);
-        max-width: 300px;
-        word-wrap: break-word;
-        font-family: 'Cairo', sans-serif;
-    `;
-    notification.textContent = message;
-    
-    // إضافة أنيميشن إذا لم تكن موجودة
-    if (!document.querySelector('#notification-styles')) {
-        const style = document.createElement('style');
-        style.id = 'notification-styles';
-        style.textContent = `
-            @keyframes slideInRight {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @keyframes fadeOut {
-                from { opacity: 1; }
-                to { opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    document.body.appendChild(notification);
-    
-    // إزالة الإشعار بعد 3 ثواني
     setTimeout(() => {
-        if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-        }
-    }, 3000);
+        alert('✅ تم إرسال طلبك بنجاح! سيتم التواصل معك قريباً عبر واتساب لإتمام الشحن.');
+    }, 500);
 }
 
-// ==================== 💾 نظام التخزين ====================
+// --------------------------------------------------------
+// 🖱️ وظائف واجهة المستخدم (UI)
+// --------------------------------------------------------
 
-// حفظ السلة في localStorage
-function saveCartToStorage() {
-    try {
-        localStorage.setItem('topCart', JSON.stringify(cart));
-        console.log('💾 تم حفظ السلة في التخزين المحلي');
-    } catch (error) {
-        console.error('❌ خطأ في حفظ السلة:', error);
-    }
+function openCart() {
+    document.getElementById('cartSidebar').classList.add('active');
+    document.getElementById('overlay').classList.add('active');
 }
 
-// تحميل السلة من localStorage
-function loadCartFromStorage() {
-    try {
-        const savedCart = localStorage.getItem('topCart');
-        if (savedCart) {
-            cart = JSON.parse(savedCart);
-            updateCart();
-            console.log('📂 تم تحميل السلة من التخزين المحلي:', cart);
-        }
-    } catch (error) {
-        console.error('❌ خطأ في تحميل السلة:', error);
-    }
+function closeCart() {
+    document.getElementById('cartSidebar').classList.remove('active');
+    document.getElementById('overlay').classList.remove('active');
 }
 
-// ==================== 🎯 الأحداث والمستمعين ====================
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-// إغلاق السلة عند الضغط خارجها
-document.addEventListener('click', function(event) {
-    const cartSidebar = document.getElementById('cart-sidebar');
-    const cartIcon = document.querySelector('.cart-icon') || document.querySelector('.cart-button');
-    
-    if (cartSidebar && cartIcon) {
-        const isClickInsideCart = cartSidebar.contains(event.target);
-        const isClickOnCartIcon = cartIcon.contains(event.target);
-        
-        if (!isClickInsideCart && !isClickOnCartIcon && cartSidebar.classList.contains('active')) {
-            cartSidebar.classList.remove('active');
-        }
+// إظهار/إخفاء زر العودة للأعلى
+window.onscroll = function() {
+    const btn = document.getElementById('scrollToTopBtn');
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        btn.style.display = 'block';
+    } else {
+        btn.style.display = 'none';
     }
-});
+};
 
-// ==================== 🚀 التهيئة ====================
-
-// التهيئة الأولية عند تحميل الصفحة
+// 🚀 التهيئة الأولية
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 متجر Top للشحن - جاهز للتشغيل');
-    
-    // تحميل السلة من التخزين المحلي
-    loadCartFromStorage();
-    
-    // إعداد تصفية التصنيفات
-    setupCategoryFilter();
-    
-    // اختبار عناصر السلة
-    const cartElements = [
-        'cart-sidebar',
-        'cart-items', 
-        'cart-count',
-        'cart-total'
-    ];
-    
-    cartElements.forEach(id => {
-        const element = document.getElementById(id);
-        console.log(`${element ? '✅' : '❌'} عنصر ${id}:`, element ? 'موجود' : 'مفقود');
-    });
-    
-    // إضافة أزرار تفريغ السلة إذا كانت موجودة
-    const clearCartBtn = document.getElementById('clear-cart');
-    if (clearCartBtn) {
-        clearCartBtn.addEventListener('click', clearCart);
-    }
+    loadCart(); // 🔑 تحميل السلة عند بدء تشغيل الصفحة
+    displayProducts();
+    updateCartDisplay();
+    console.log('✅ تم تحميل المتجر بنجاح!');
 });
-
-// ==================== 🌟 جعل الدوال متاحة عالمياً ====================
-
-window.addToCart = addToCart;
-window.addToCartWithRealPrice = addToCartWithRealPrice;
-window.removeFromCart = removeFromCart;
-window.toggleCart = toggleCart;
-window.sendToWhatsApp = sendToWhatsApp;
-window.clearCart = clearCart;
-window.updateCart = updateCart;
-window.updateQuantity = updateQuantity;
-
-console.log('🛒 نظام السلة المحسن جاهز للعمل!');
