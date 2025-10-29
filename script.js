@@ -35,6 +35,7 @@ let currentCategory = 'all';
  * دالة مساعدة لحفظ السلة في التخزين المحلي للمتصفح (Local Storage)
  */
 function saveCart() {
+    // 💾 تخزين مصفوفة السلة كـ JSON
     localStorage.setItem('shoppingCart', JSON.stringify(cart));
 }
 
@@ -44,6 +45,7 @@ function saveCart() {
 function loadCart() {
     const savedCart = localStorage.getItem('shoppingCart');
     if (savedCart) {
+        // 🔄 استرجاع وتحويل JSON إلى مصفوفة
         cart = JSON.parse(savedCart);
     }
 }
@@ -110,7 +112,6 @@ function createCartItemHTML(item, index) {
     const originalProduct = PRODUCTS_DATA.find(p => p.id === item.id);
     const itemIcon = originalProduct ? `<i class="${originalProduct.icon}"></i>` : '📦';
     const itemColor = originalProduct ? originalProduct.color : '#bdc3c7';
-    const subtotal = item.price * item.quantity;
 
     return `
         <div class="cart-item">
@@ -353,8 +354,5 @@ document.addEventListener('DOMContentLoaded', function() {
     loadCart(); // 🔑 تحميل السلة عند بدء تشغيل الصفحة
     displayProducts();
     updateCartDisplay();
-  
     console.log('✅ تم تحميل المتجر بنجاح!');
-
-<script src="script.js"></script>
 });
