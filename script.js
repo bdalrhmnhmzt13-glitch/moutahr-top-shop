@@ -353,5 +353,8 @@ document.addEventListener('DOMContentLoaded', function() {
     loadCart(); // 🔑 تحميل السلة عند بدء تشغيل الصفحة
     displayProducts();
     updateCartDisplay();
+  
     console.log('✅ تم تحميل المتجر بنجاح!');
+
+<script src="script.js"></script>
 });
