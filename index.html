@@ -38,7 +38,7 @@
             background: var(--light-bg);
             color: #333;
             line-height: 1.6;
-            padding-bottom: 70px; /* مساحة لزر العودة للأعلى */
+            padding-bottom: 70px; 
         }
         
         /* الرأس */
@@ -103,12 +103,12 @@
             margin: 20px 15px;
             padding: 10px 0;
             overflow-x: auto;
-            justify-content: flex-start; /* لضمان ظهور شريط التمرير الأفقي */
+            justify-content: flex-start; 
             -webkit-overflow-scrolling: touch;
         }
 
         .category-btn {
-            flex-shrink: 0; /* لمنع انكماش الأزرار */
+            flex-shrink: 0; 
             background: var(--dark-color);
             color: white;
             border: none;
@@ -151,7 +151,6 @@
         }
 
         .cart-count {
-            /* تصميم أفضل لعداد السلة */
             position: absolute;
             top: 0px;
             right: 0px;
@@ -175,7 +174,7 @@
             height: 100vh;
             background: white;
             box-shadow: -4px 0 20px rgba(0,0,0,0.2);
-            transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* منحنى حركة أفضل */
+            transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
             z-index: 9999;
             padding: 20px;
             display: flex;
@@ -189,6 +188,9 @@
         .close-cart {
             font-size: 28px;
             color: var(--primary-color);
+            background: none;
+            border: none;
+            cursor: pointer;
         }
         
         .overlay {
@@ -231,7 +233,7 @@
             box-shadow: var(--card-shadow);
             text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            min-height: 280px; /* ضمان ارتفاع ثابت */
+            min-height: 280px; 
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -254,7 +256,6 @@
             color: white;
             font-size: 2rem;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            /* إزالة اللون الثابت، سيتم تطبيق اللون عبر JS */
         }
         
         .product-name {
@@ -268,7 +269,7 @@
             color: #7f8c8d;
             margin-bottom: 15px;
             font-size: 0.9rem;
-            flex-grow: 1; /* للسماح للوصف بأخذ مساحة إضافية */
+            flex-grow: 1; 
         }
         
         .product-price {
@@ -297,63 +298,109 @@
             transform: translateY(-1px);
         }
 
-        /* عناصر السلة (Cart Items) */
-        .cart-item {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid #f0f0f0;
-            font-size: 0.95rem;
-        }
-        
-        .cart-item-info {
-            line-height: 1.4;
+        /* 🆕 تحسين تصميم عناصر السلة (احترافي) */
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
         }
 
+        .cart-item {
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 0.95rem;
+        }
+
+        .cart-item-details {
+            display: flex;
+            align-items: center;
+            gap: 15px; 
+            flex-grow: 1;
+        }
+
+        .item-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .item-name-qty {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-name-qty .name {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .item-price {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 2px;
+        }
+
+        /* 🆕 تحسين أدوات التحكم بالكمية */
         .cart-item-controls {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
             gap: 8px;
+            min-width: 100px;
         }
 
         .quantity-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 5px;
             background: #f4f6f8;
             border-radius: 20px;
-            padding: 3px;
+            padding: 2px;
         }
-        
+
+        .quantity-controls span {
+            padding: 0 5px;
+            font-weight: bold;
+        }
+
         .quantity-btn {
-            background: none;
-            border: none;
-            width: 24px;
-            height: 24px;
+            background: white;
+            border: 1px solid #ddd;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
             color: var(--dark-color);
             font-weight: bold;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.2s;
         }
-        
+
         .quantity-btn:hover {
-            color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
 
         .remove-btn {
-            background: var(--primary-color);
+            background: #e74c3c; 
             color: white;
             padding: 5px 10px;
             border-radius: 6px;
             font-size: 0.75rem;
             transition: background 0.3s ease;
+            border: none;
         }
-
-        .checkout-btn {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #128C7E 100%);
-            /* تصميم معزز */
+        .remove-btn:hover {
+            background: #c0392b;
         }
 
         /* زر العودة للأعلى */
@@ -369,7 +416,7 @@
             font-size: 1.2rem;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            display: none; /* يتم إخفاؤه مبدئياً */
+            display: none; 
             z-index: 999;
             transition: opacity 0.3s ease;
         }
@@ -450,7 +497,7 @@
         </div>
         
         <div class="cart-items" id="cartItems">
-            <p style="text-align: center; color: #7f8c8d; padding: 20px;" id="emptyCartMessage">السلة فارغة</p>
+            <p style="text-align: center; color: #7f8c8d; padding: 20px;"><i class="fa-solid fa-box-open"></i> سلة التسوق فارغة حالياً.</p>
         </div>
         
         <div class="cart-total" id="cartTotal">
@@ -467,7 +514,7 @@
     </div>
 
     <script>
-        // 📦 بيانات المنتجات (تم تبسيط خصائص الأيقونات والألوان)
+        // 📦 بيانات المنتجات 
         const PRODUCTS_DATA = [
             // تطبيقات اجتماعية (Social)
             { id: 501, name: "Soul Chill", price: 15000, category: "social", color: "#9b59b6", description: "عملات وعناصر Soul Chill", icon: "fa-solid fa-music", realPrice: 12000 },
@@ -497,24 +544,41 @@
         let currentCategory = 'all';
 
         // --------------------------------------------------------
+        // 🛠️ وظائف مساعدة لتخزين البيانات
+        // --------------------------------------------------------
+
+        /**
+         * دالة مساعدة لحفظ السلة في التخزين المحلي للمتصفح (Local Storage)
+         */
+        function saveCart() {
+            localStorage.setItem('shoppingCart', JSON.stringify(cart));
+        }
+
+        /**
+         * دالة مساعدة لتحميل السلة من التخزين المحلي
+         */
+        function loadCart() {
+            const savedCart = localStorage.getItem('shoppingCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+            }
+        }
+
+        // --------------------------------------------------------
         // ⚙️ وظائف العرض (DOM Manipulation)
         // --------------------------------------------------------
 
         /**
          * دالة مساعدة لتحويل الأرقام إلى نص مع فواصل (مثال: 10,000)
-         * @param {number} num - الرقم المراد تنسيقه
-         * @returns {string} الرقم منسقاً مع وحدة العملة
          */
         const formatCurrency = (num) => `${num.toLocaleString()} ل.س`;
 
         /**
          * إنشاء HTML لبطاقة منتج واحد
-         * @param {object} product - كائن المنتج
-         * @returns {string} - سلسلة HTML للبطاقة
          */
         function createProductCard(product) {
             return `
-                <div class="product" data-id="${product.id}" data-price="${product.realPrice}" data-name="${product.name}">
+                <div class="product" data-id="${product.id}">
                     <div class="product-image" style="background: ${product.color};">
                         <i class="${product.icon}"></i>
                     </div>
@@ -555,7 +619,41 @@
         }
 
         /**
-         * عرض محتويات السلة وتحديث الإجمالي
+         * إنشاء HTML لعنصر واحد داخل السلة (مُحسَّن)
+         */
+        function createCartItemHTML(item, index) {
+            // العثور على المنتج الأصلي للحصول على الأيقونة واللون
+            const originalProduct = PRODUCTS_DATA.find(p => p.id === item.id);
+            const itemIcon = originalProduct ? `<i class="${originalProduct.icon}"></i>` : '📦';
+            const itemColor = originalProduct ? originalProduct.color : '#bdc3c7';
+            const subtotal = item.price * item.quantity;
+
+            return `
+                <div class="cart-item">
+                    <div class="cart-item-details">
+                        <div class="item-icon" style="background-color: ${itemColor};">${itemIcon}</div>
+                        <div class="item-name-qty">
+                            <span class="name">${item.name}</span>
+                            <span class="item-price">السعر: ${formatCurrency(item.price)} / الوحدة</span>
+                        </div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="updateQuantity(${index}, -1)"><i class="fa-solid fa-minus"></i></button>
+                            <span>${item.quantity}</span>
+                            <button class="quantity-btn" onclick="updateQuantity(${index}, 1)"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                        <button class="remove-btn" onclick="removeFromCart(${index})">
+                            <i class="fa-solid fa-trash-can"></i> إزالة
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+
+        /**
+         * تحديث عرض السلة والإجمالي وحفظها في التخزين المحلي
          */
         function updateCartDisplay() {
             const cartItemsContainer = document.getElementById('cartItems');
@@ -570,32 +668,20 @@
                 return sum + item.quantity;
             }, 0);
 
-            // تحديث العداد والإجمالي
+            // تحديث العداد والإجمالي وحالة الزر
             cartCount.textContent = totalItems;
             cartTotalElement.textContent = `الإجمالي: ${formatCurrency(total)}`;
             checkoutBtn.disabled = cart.length === 0;
 
             // تحديث قائمة العناصر
             if (cart.length === 0) {
-                cartItemsContainer.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;">السلة فارغة</p>';
+                cartItemsContainer.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;"><i class="fa-solid fa-box-open"></i> سلة التسوق فارغة حالياً.</p>';
             } else {
-                cartItemsContainer.innerHTML = cart.map((item, index) => `
-                    <div class="cart-item">
-                        <div class="cart-item-info">
-                            <div class="cart-item-name">${item.name}</div>
-                            <div class="cart-item-price">${formatCurrency(item.price)}</div>
-                        </div>
-                        <div class="cart-item-controls">
-                            <div class="quantity-controls">
-                                <button class="quantity-btn" onclick="updateQuantity(${index}, -1)"><i class="fa-solid fa-minus"></i></button>
-                                <span>${item.quantity}</span>
-                                <button class="quantity-btn" onclick="updateQuantity(${index}, 1)"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                            <button class="remove-btn" onclick="removeFromCart(${index})">إزالة</button>
-                        </div>
-                    </div>
-                `).join('');
+                cartItemsContainer.innerHTML = cart.map(createCartItemHTML).join('');
             }
+
+            // 🔑 حفظ السلة بعد كل تحديث
+            saveCart(); 
         }
 
 
@@ -605,7 +691,6 @@
 
         /**
          * تفعيل عرض السعر الحقيقي وتتبّع حدث view_real_price
-         * @param {number} productId - معرّف المنتج
          */
         function showRealPrice(productId) {
             const product = PRODUCTS_DATA.find(p => p.id === productId);
@@ -639,8 +724,6 @@
 
         /**
          * تصفية المنتجات وتحديث زر الفئة النشط
-         * @param {string} category - الفئة المراد تصفيتها
-         * @param {HTMLElement} clickedButton - الزر الذي تم النقر عليه
          */
         function filterCategory(category, clickedButton) {
             currentCategory = category;
@@ -656,7 +739,6 @@
 
         /**
          * إضافة المنتج إلى السلة
-         * @param {number} productId - معرّف المنتج
          */
         function addToCart(productId) {
             const product = PRODUCTS_DATA.find(p => p.id === productId);
@@ -681,8 +763,6 @@
 
         /**
          * تحديث كمية المنتج في السلة
-         * @param {number} index - مؤشر المنتج في مصفوفة السلة
-         * @param {number} change - مقدار التغيير (+1 أو -1)
          */
         function updateQuantity(index, change) {
             const item = cart[index];
@@ -697,7 +777,6 @@
 
         /**
          * إزالة منتج من السلة
-         * @param {number} index - مؤشر المنتج في مصفوفة السلة
          */
         function removeFromCart(index) {
             cart.splice(index, 1);
@@ -747,7 +826,7 @@
             
             window.open(whatsappURL, '_blank');
             
-            // تفريغ السلة بعد الإرسال
+            // تفريغ السلة وحفظها
             cart = [];
             updateCartDisplay();
             closeCart();
@@ -787,6 +866,7 @@
 
         // 🚀 التهيئة الأولية
         document.addEventListener('DOMContentLoaded', function() {
+            loadCart(); // 🔑 تحميل السلة عند بدء تشغيل الصفحة
             displayProducts();
             updateCartDisplay();
             console.log('✅ تم تحميل المتجر بنجاح!');
